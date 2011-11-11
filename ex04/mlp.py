@@ -31,6 +31,8 @@ def transfer_func_hidden(x):
 	return math.tanh(x)
 def transfer_func_output(x):
 	return x
+def error_func(y, yt):
+	return (y-yt)**2
 
 # Read the data file
 try:
