@@ -13,7 +13,7 @@ last_rand=random.random()
 
 # interval (from -alpha to alpha)
 alpha = 0.5
-# number of neurons per layer
+# number of neurons per layer (counting the bias)
 # n[layer] = no.
 n = [2,3,1]
 # weights
@@ -22,11 +22,10 @@ w = []
 # activities
 # s[depth][neuronfrom]
 s = []
-# input data set (includes the bias at x[0])
-x = []
-x[0] = random_in_interval(alpha)
+# input data set
+inputs = []
 # output data set
-y = []
+outputs = []
 
 def transfer_func_hidden(x):
 	return math.tanh(x)
@@ -43,9 +42,7 @@ def random_in_interval(x):
 	return  random.uniform(-x,x)
 
 
-###### MAIN ######
-
-
+###### INIT ######
 # weigths
 for i in range(len(n)-1):
 	w.append([])
@@ -61,7 +58,10 @@ for i in range(len(w)):
 		for k in range(len(w[i][j])):
 			w[i][j][k] = random_in_interval(alpha)
 
+
+###### LEARNING ######
 # Read the data file
+bias = 1
 try:
 	data_f = open('data.txt', 'r')
 	line = data_f.readline()
@@ -69,12 +69,36 @@ try:
 		parts = line.split()
 		# read the x (input for the sample), and prepend it
 		# with the bias (constant threshold multiplier)
-		x.append([1, float(parts[0])])
+		inputs.append([bias, float(parts[0])])
 		# read the y (output for the sample)
-		y.append([float(parts[1])])
+		outputs.append([float(parts[1])])
 		line = data_f.readline()
 except:
 	print "Failed to parse the data file!"
 	exit(-1)
 finally:
 	data_f.close()
+
+
+
+for training in range(len(inputs)):
+	x = inputs[training]
+	# "activities" of first layer (e.g. inputs)
+	for i in range(len(x)):
+		s[0][i] = x[i]
+
+	# activities for hidden and layers
+	for current_layer in range(1, len(n)): # for each layer
+		previous_layer = current_layer - 1
+		for current_neuron in range(n[current_layer]): # for each neuron in this layer
+			h = 0.0 # total input for this neuron
+			for previous_neuron in range(len(s[previous_layer])): # for each neuron in the previous layer
+				h = h + w[previous_layer][previous_neuron][current_neuron] * s[previous_layer][previous_neuron]
+			if (current_layer != len(n)-1):
+				f = transfer_func_hidden
+			else:
+				f = transfer_func_output
+			s[current_layer][current_neuron] = f(h)
+
+
+	print s
