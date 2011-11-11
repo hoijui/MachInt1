@@ -1,4 +1,12 @@
+#
+# TU Berlin - Machine Intelligence I WS11/12 - Exercise 4
+# A Simple MLP
+# authors: Rolf Schroeder & Robin Vobruba
+#
 
+
+
+# Define the some vars
 
 # number of neurons per layer
 # n[layer] = no.
@@ -21,13 +29,16 @@ alpha = 0.5
 
 
 
-# read data file
+# Read the data file
 try:
 	data_f = open('data.txt', 'r')
 	line = data_f.readline()
 	while line != "":
 		parts = line.split()
+		# read the x (input for the sample), and prepend it
+		# with the bias (constant threshold multiplier)
 		x.append([1, float(parts[0])])
+		# read the y (output for the sample)
 		y.append([float(parts[1])])
 		line = data_f.readline()
 except:
@@ -38,6 +49,7 @@ finally:
 
 
 
+# Initialize the weights
 for i in range(0, len(n) - 2): # for each layer except the last one
 	w.append([])
 	w[i].append([])
