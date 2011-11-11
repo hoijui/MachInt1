@@ -11,24 +11,22 @@ last_rand=random.random()
 
 # Define the some vars
 
+# interval (from -alpha to alpha)
+alpha = 0.5
 # number of neurons per layer
 # n[layer] = no.
 n = [2,3,1]
 # weights
-# w[layerfrom][neuronfrom][layerto][neuronto]
+# w[depth][neuronfrom][neuronto]
 w = []
 # activities
-# s[layer][neuron]
+# s[depth][neuronfrom]
 s = []
-# transfer function
-# t[layer][neuron]
-t = []
 # input data set (includes the bias at x[0])
 x = []
+x[0] = random_in_interval(alpha)
 # output data set
 y = []
-# interval (from -alpha to alpha)
-alpha = 0.5
 
 def transfer_func_hidden(x):
 	return math.tanh(x)
@@ -43,6 +41,25 @@ def matrix(i, j, default=0.0):
 	return m
 def random_in_interval(x):
 	return  random.uniform(-x,x)
+
+
+###### MAIN ######
+
+
+# weigths
+for i in range(len(n)-1):
+	w.append([])
+	w[i] = matrix(n[i], n[i+1])
+# activities
+for i in range(len(n)):
+	s.append([])
+	s[i] = [0.0]*n[i]
+
+# populate weights
+for i in range(len(w)):
+	for j in range(len(w[i])):
+		for k in range(len(w[i][j])):
+			w[i][j][k] = random_in_interval(alpha)
 
 # Read the data file
 try:
@@ -61,23 +78,3 @@ except:
 	exit(-1)
 finally:
 	data_f.close()
-# weigths
-for i in range(len(n)-1):
-	w.append([])
-	w[i] = matrix(n[i], n[i+1])
-# activities
-for i in range(len(n)):
-	s.append([])
-	s[i] = [0.0]*n[i]
-
-
-
-# populate weights
-for i in range(len(w)):
-	for j in range(len(w[i])):
-		for k in range(len(w[i][j])):
-			w[i][j][k] = random_in_interval(alpha)
-
-
-
-
