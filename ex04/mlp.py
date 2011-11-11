@@ -12,10 +12,31 @@ s = []
 # transfer function
 # t[layer][neuron]
 t = []
-# input and bias(x[0])
-x = [1]
+# input data set (includes the bias at x[0])
+x = []
+# output data set
+y = []
 # interval (from -alpha to alpha)
 alpha = 0.5
+
+
+
+# read data file
+try:
+	data_f = open('data.txt', 'r')
+	line = data_f.readline()
+	while line != "":
+		parts = line.split()
+		x.append([1, float(parts[0])])
+		y.append([float(parts[1])])
+		line = data_f.readline()
+except:
+	print "Failed to parse the data file!"
+	exit(-1)
+finally:
+	data_f.close()
+
+
 
 for i in range(0, len(n) - 2): # for each layer except the last one
 	w.append([])
