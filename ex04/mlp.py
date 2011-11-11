@@ -4,7 +4,7 @@
 # authors: Rolf Schroeder & Robin Vobruba
 #
 
-
+import math
 
 # Define the some vars
 
@@ -27,7 +27,10 @@ y = []
 # interval (from -alpha to alpha)
 alpha = 0.5
 
-
+def transfer_func_hidden(x):
+	return math.tanh(x)
+def transfer_func_output(x):
+	return x
 
 # Read the data file
 try:
