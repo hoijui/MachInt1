@@ -4,7 +4,10 @@
 # authors: Rolf Schroeder & Robin Vobruba
 #
 
-import math
+import math, random, time
+
+random.seed()
+last_rand=random.random()
 
 # Define the some vars
 
@@ -39,7 +42,7 @@ def matrix(i, j, default=0.0):
 		m.append([default]*j)
 	return m
 def random_in_interval(x):
-	return random.uniform(-x,x)
+	return  random.uniform(-x,x)
 
 # Read the data file
 try:
@@ -58,22 +61,23 @@ except:
 	exit(-1)
 finally:
 	data_f.close()
-
-for i in range(0,len(n)-2):
+# weigths
+for i in range(len(n)-1):
 	w.append([])
-	w[i] = matrix(n[i], n[i+1], random_in_interval(alpha))
+	w[i] = matrix(n[i], n[i+1])
+# activities
+for i in range(len(n)):
+	s.append([])
+	s[i] = [0.0]*n[i]
 
-# Initialize the weights
-for i in range(0, len(n) - 2): # for each layer except the last one
-	w.append([])
-	w[i].append([])
-	for j in range(0, n[i] - 1): # for each neuron in that layer
-		w[i][j].append([])
-		for k in range(0, n[i+1] - 1): # for each neuron from the next layer
-			w[i][j][k].append([])
 
-			w[i][j][i+1][k] = rand(alpha)
-			print "ie"
-#	w[i]
-			
+
+# populate weights
+for i in range(len(w)):
+	for j in range(len(w[i])):
+		for k in range(len(w[i][j])):
+			w[i][j][k] = random_in_interval(alpha)
+
+
+
 
