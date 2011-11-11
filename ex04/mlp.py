@@ -33,6 +33,11 @@ def transfer_func_output(x):
 	return x
 def error_func(y, yt):
 	return (y-yt)**2
+def matrix(i, j, default=0.0):
+	m = []
+	for k in range(i):
+		m.append([default]*j)
+	return m
 
 # Read the data file
 try:
