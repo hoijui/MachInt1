@@ -38,6 +38,8 @@ def matrix(i, j, default=0.0):
 	for k in range(i):
 		m.append([default]*j)
 	return m
+def random_in_interval(x):
+	return random.uniform(-x,x)
 
 # Read the data file
 try:
@@ -57,7 +59,9 @@ except:
 finally:
 	data_f.close()
 
-
+for i in range(0,len(n)-2):
+	w.append([])
+	w[i] = matrix(n[i], n[i+1], random_in_interval(alpha))
 
 # Initialize the weights
 for i in range(0, len(n) - 2): # for each layer except the last one
