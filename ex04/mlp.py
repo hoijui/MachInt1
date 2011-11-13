@@ -15,6 +15,8 @@ last_rand=random.random()
 # interval (from -alpha to alpha)
 alpha = 0.5
 
+learnRate = 0.5
+
 # number of neurons per layer (counting the bias)
 # n[layer] = no.
 n = [1, 3, 1]
@@ -29,6 +31,13 @@ h = []
 
 # transfer functions
 t = []
+td = []
+
+# local errors
+d = []
+
+# gradients
+grad = []
 
 # activities
 # s[depth][neuronfrom]
@@ -45,8 +54,14 @@ outputs = []
 def transfer_hidden(x):
 	return math.tanh(x)
 
+def transfer_hidden_deriv(x):
+	return 1 - math.tanh(x)**2
+
 def transfer_output(x):
 	return x
+
+def transfer_output_deriv(x):
+	return 1
 
 def weightInitializer():
 	return random_in_interval(alpha)
@@ -73,10 +88,16 @@ def random_in_interval(x):
 for layerId in range(len(n) - 1):
 	w.append(matrix(n[layerId] + 1, n[layerId + 1], weightInitializer))
 	h.append([0.0] * n[layerId + 1])
+	d.append([0.0] * n[layerId + 1])
+	grad.append([0.0] * n[layerId + 1])
 
 # transfer functions
 t.append([transfer_hidden] * n[1])
 t.append([transfer_output] * n[2])
+
+# transfer functions
+td.append([transfer_hidden_deriv] * n[1])
+td.append([transfer_output_deriv] * n[2])
 
 # activities
 for layerId in range(len(n)):
@@ -140,6 +161,28 @@ def forwardPropStep(dataIndex):
 
 
 # Backwards propagation
+def backwardPropLayer(layerId):
+	for neuronId in range(n[layerId] + 1):
+		wdSum = 0.0
+		for postNeuronId in range(n[layerId - 1]):
+			print "layerId: ", layerId, "neuronId: ", neuronId, "postNeuronId: ", postNeuronId
+			print w[layerId][neuronId][postNeuronId]
+			print d[layerId][postNeuronId]
+			wdSum += w[layerId][neuronId][postNeuronId] * d[layerId + 1][postNeuronId]
+		d[layerId][neuronId] = td[layerId][neuronId](h[layerId][neuronId]) * wdSum
+		grad[][][] = 
+#learnRate
+
+
+def backwardPropStep(dataIndex, e):
+	# local errors of the output neurons
+	d[1] = [td[1][0](h[1][0])]
+
+	# activities for hidden layers
+	lli = range(len(n) - 2)
+	lli.reverse()
+	for layerId in lli:
+		backwardPropLayer(layerId)
 
 
 print  "x\ty\ty_T\terror"
