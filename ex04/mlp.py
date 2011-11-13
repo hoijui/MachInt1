@@ -24,7 +24,7 @@ n = [1, 3, 1]
 # neuronFrom == 0 -> the bias weight
 w = []
 
-# 
+# local inputs
 h = []
 
 # transfer functions
@@ -55,7 +55,7 @@ def initZero():
 	return 0.0
 
 def error(y, yt):
-	return (y-yt)**2
+	return (y - yt)**2
 
 def matrix(columns, rows, initializerFunc=initZero):
 	m = [[0 for r in range(rows)] for c in range(columns)]
@@ -107,7 +107,7 @@ finally:
 
 
 # Forward propagation
-def forwardProp(layerId):
+def forwardPropLayer(layerId):
 	for neuronId in range(n[layerId]):
 		nPre = n[layerId - 1]
 		# bias * thresholdWeight
@@ -120,23 +120,28 @@ def forwardProp(layerId):
 		S[layerId][neuronId] = t[layerId - 1][neuronId](hCur)
 
 
-print  "x\ty\ty_T\terror"
-for training in range(len(inputs)):
-	x = inputs[training][0]
+
+def forwardPropStep(dataIndex):
+	x = inputs[dataIndex][0]
 	# "activities" of layer 0 (e.g. inputs)
 	S[0] = [x]
 
 	# activities for hidden layers
 	for layerId in range(len(n) - 1):
-		forwardProp(layerId + 1)
+		forwardPropLayer(layerId + 1)
 
 	y_T = S[len(n) - 1][0]
-	y = outputs[training][0]
+	y = outputs[dataIndex][0]
 	e = error(y, y_T)
 
 	print x, "\t", y, "\t", y_T, "\t", e
+	return e
 
 
 # Backwards propagation
 
 
+print  "x\ty\ty_T\terror"
+for dataIndex in range(len(inputs)):
+	e = forwardPropStep(dataIndex)
+	backwardPropStep(dataIndex, e)
