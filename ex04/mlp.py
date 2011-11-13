@@ -9,57 +9,82 @@ import math, random, time
 random.seed()
 last_rand=random.random()
 
-# Define the some vars
+
+# Define the networks component vars
 
 # interval (from -alpha to alpha)
 alpha = 0.5
+
 # number of neurons per layer (counting the bias)
 # n[layer] = no.
-n = [2,3,1]
+n = [1, 3, 1]
+
 # weights
-# w[depth][neuronfrom][neuronto]
+# w[layerId][neuronFrom][neuronTo]
+# neuronFrom == 0 -> the bias weight
 w = []
+
+# 
+h = []
+
+# transfer functions
+t = []
+
 # activities
 # s[depth][neuronfrom]
-s = []
+S = []
+
 # input data set
 inputs = []
+
 # output data set
 outputs = []
 
-def transfer_func_hidden(x):
+
+
+def transfer_hidden(x):
 	return math.tanh(x)
-def transfer_func_output(x):
+
+def transfer_output(x):
 	return x
-def error_func(y, yt):
+
+def weightInitializer():
+	return random_in_interval(alpha)
+
+def initZero():
+	return 0.0
+
+def error(y, yt):
 	return (y-yt)**2
-def matrix(i, j, default=0.0):
-	m = []
-	for k in range(i):
-		m.append([default]*j)
+
+def matrix(columns, rows, initializerFunc=initZero):
+	m = [[0 for r in range(rows)] for c in range(columns)]
+	for c in range(columns):
+		for r in range(rows):
+			m[c][r] = initializerFunc()
 	return m
+
 def random_in_interval(x):
-	return  random.uniform(-x,x)
+	return  random.uniform(-x, x)
 
 
 ###### INIT ######
 # weigths
-for i in range(len(n)-1):
-	w.append([])
-	w[i] = matrix(n[i], n[i+1])
-# activities
-for i in range(len(n)):
-	s.append([])
-	s[i] = [0.0]*n[i]
+for layerId in range(len(n) - 1):
+	w.append(matrix(n[layerId] + 1, n[layerId + 1], weightInitializer))
+	h.append([0.0] * n[layerId + 1])
 
-# populate weights
-for i in range(len(w)):
-	for j in range(len(w[i])):
-		for k in range(len(w[i][j])):
-			w[i][j][k] = random_in_interval(alpha)
+# transfer functions
+t.append([transfer_hidden] * n[1])
+t.append([transfer_output] * n[2])
+
+# activities
+for layerId in range(len(n)):
+	S.append([0.0] * n[layerId])
 
 
 ###### LEARNING ######
+
 # Read the data file
 bias = 1
 try:
@@ -69,7 +94,7 @@ try:
 		parts = line.split()
 		# read the x (input for the sample), and prepend it
 		# with the bias (constant threshold multiplier)
-		inputs.append([bias, float(parts[0])])
+		inputs.append([float(parts[0])])
 		# read the y (output for the sample)
 		outputs.append([float(parts[1])])
 		line = data_f.readline()
@@ -81,24 +106,37 @@ finally:
 
 
 
+# Forward propagation
+def forwardProp(layerId):
+	for neuronId in range(n[layerId]):
+		nPre = n[layerId - 1]
+		# bias * thresholdWeight
+		hCur = 1 * w[layerId - 1][0][neuronId]
+		for preNeuronId in range(n[layerId - 1] + 1):
+			Scur = ([1.0] + S[layerId - 1])[preNeuronId]
+			wcur = w[layerId - 1][preNeuronId][neuronId]
+			hCur = hCur + (Scur * wcur)
+		h[layerId - 1][neuronId] = hCur
+		S[layerId][neuronId] = t[layerId - 1][neuronId](hCur)
+
+
+print  "x\ty\ty_T\terror"
 for training in range(len(inputs)):
-	x = inputs[training]
-	# "activities" of first layer (e.g. inputs)
-	for i in range(len(x)):
-		s[0][i] = x[i]
+	x = inputs[training][0]
+	# "activities" of layer 0 (e.g. inputs)
+	S[0] = [x]
 
-	# activities for hidden and layers
-	for current_layer in range(1, len(n)): # for each layer
-		previous_layer = current_layer - 1
-		for current_neuron in range(n[current_layer]): # for each neuron in this layer
-			h = 0.0 # total input for this neuron
-			for previous_neuron in range(len(s[previous_layer])): # for each neuron in the previous layer
-				h = h + w[previous_layer][previous_neuron][current_neuron] * s[previous_layer][previous_neuron]
-			if (current_layer != len(n)-1):
-				f = transfer_func_hidden
-			else:
-				f = transfer_func_output
-			s[current_layer][current_neuron] = f(h)
+	# activities for hidden layers
+	for layerId in range(len(n) - 1):
+		forwardProp(layerId + 1)
+
+	y_T = S[len(n) - 1][0]
+	y = outputs[training][0]
+	e = error(y, y_T)
+
+	print x, "\t", y, "\t", y_T, "\t", e
 
 
-	print s
+# Backwards propagation
+
+
