@@ -70,7 +70,10 @@ def initZero():
 	return 0.0
 
 def error(y, yt):
-	return (y - yt)**2
+	return 0.5 * ((y - yt)**2)
+
+def error_deriv(y, yt):
+	return (y - yt)
 
 def matrix(columns, rows, initializerFunc=initZero):
 	m = [[0 for r in range(rows)] for c in range(columns)]
