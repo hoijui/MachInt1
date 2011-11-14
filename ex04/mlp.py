@@ -89,10 +89,10 @@ def random_in_interval(x):
 ###### INIT ######
 # weigths
 for layerId in range(len(n) - 1):
-	w.append(matrix(n[layerId] + 1, n[layerId + 1], weightInitializer))
+	w.append(   matrix(n[layerId] + 1, n[layerId + 1], weightInitializer))
+	grad.append(matrix(n[layerId] + 1, n[layerId + 1], initZero))
 	h.append([0.0] * n[layerId + 1])
 	d.append([0.0] * n[layerId + 1])
-	grad.append([0.0] * n[layerId + 1])
 
 # transfer functions
 t.append([transfer_hidden] * n[1])
@@ -161,35 +161,65 @@ def forwardPropStep(dataIndex):
 	e = error(y, y_T)
 
 	print x, "\t", y, "\t", y_T, "\t", e
-	return e
+	return y, y_T
 
 
 # Backwards propagation
-def backwardPropLayer(layerId):
-	for neuronId in range(n[layerId] + 1):
+def backwardPropLayerLocalErrors(layerId):
+	for neuronId in range(n[layerId]):
 		wdSum = 0.0
-		for postNeuronId in range(n[layerId - 1]):
-			print "layerId: ", layerId, "neuronId: ", neuronId, "postNeuronId: ", postNeuronId
-			print w[layerId][neuronId][postNeuronId]
-			print d[layerId][postNeuronId]
-			wdSum += w[layerId][neuronId][postNeuronId] * d[layerId + 1][postNeuronId]
-		d[layerId][neuronId] = td[layerId][neuronId](h[layerId][neuronId]) * wdSum
-		grad[][][] = 
-#learnRate
+		for postNeuronId in range(n[layerId + 1]):
+			#print "layerId: ", layerId, "neuronId: ", neuronId, "postNeuronId: ", postNeuronId
+			#print w[layerId][neuronId][postNeuronId]
+			#print d[layerId - 1][postNeuronId]
+			#print d[layerId][postNeuronId]
+			wdSum += w[layerId][neuronId][postNeuronId] * d[layerId][postNeuronId]
+		d[layerId - 1][neuronId] = td[layerId - 1][neuronId](h[layerId - 1][neuronId]) * wdSum
 
 
-def backwardPropStep(dataIndex, e):
+def backwardPropLayerGradients(layerId, y, y_T):
+	e_deriv = error_deriv(y, y_T)
+	for neuronId in range(n[layerId]):
+		for postNeuronId in range(n[layerId + 1]):
+			grad[layerId][neuronId][postNeuronId] += e_deriv * d[layerId][postNeuronId] * S[layerId][neuronId]
+			# use these for online learning (vs batch-learning)
+			#w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - (learnRate * grad[layerId][neuronId][postNeuronId])
+			#grad[layerId][neuronId][postNeuronId] = 0.0
+
+
+def backwardPropStep(dataIndex, y, y_T):
 	# local errors of the output neurons
 	d[1] = [td[1][0](h[1][0])]
 
-	# activities for hidden layers
-	lli = range(len(n) - 2)
-	lli.reverse()
-	for layerId in lli:
-		backwardPropLayer(layerId)
+	# local errors for hidden layers
+	llei = range(1, len(n) - 1)
+	llei.reverse()
+	for layerId in llei:
+		backwardPropLayerLocalErrors(layerId)
+
+	# gradients for all weights
+	lgi = range(len(n) - 1)
+	lgi.reverse()
+	for layerId in lgi:
+		backwardPropLayerGradients(layerId, y, y_T)
 
 
-print  "x\ty\ty_T\terror"
-for dataIndex in range(len(inputs)):
-	e = forwardPropStep(dataIndex)
-	backwardPropStep(dataIndex, e)
+for iterationId in range(1000):
+
+	print  "x\ty\ty_T\terror"
+	for dataIndex in range(len(inputs)):
+		y, y_T = forwardPropStep(dataIndex)
+		backwardPropStep(dataIndex, y, y_T)
+
+	# adjust weights & reset gradients
+	lgi = range(len(n) - 1)
+	lgi.reverse()
+	for layerId in lgi:
+		for neuronId in range(n[layerId]):
+			for postNeuronId in range(n[layerId + 1]):
+				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - (learnRate * grad[layerId][neuronId][postNeuronId])
+				grad[layerId][neuronId][postNeuronId] = 0.0
+
+
+
+
