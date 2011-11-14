@@ -131,13 +131,14 @@ finally:
 
 
 # Forward propagation
+biasS = 1.0
 def forwardPropLayer(layerId):
 	for neuronId in range(n[layerId]):
 		nPre = n[layerId - 1]
 		# bias * thresholdWeight
 		hCur = 1 * w[layerId - 1][0][neuronId]
 		for preNeuronId in range(n[layerId - 1] + 1): 
-			biasPlusS = [1.0] + S[layerId - 1]
+			biasPlusS = [biasS] + S[layerId - 1]
 			Spre = biasPlusS[preNeuronId]
 			wcur = w[layerId - 1][preNeuronId][neuronId]
 			hCur = hCur + (Spre * wcur)
