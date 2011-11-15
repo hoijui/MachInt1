@@ -89,6 +89,14 @@ def matrix(columns, rows, initializerFunc=initZero):
 def random_in_interval(x):
 	return random.uniform(-x, x)
 
+def deciRange(start, stop, step):
+	rng = []
+	cur = start
+	while cur <= stop:
+		rng.append(cur)
+		cur += step
+	return rng
+
 
 ###### INIT ######
 # weigths
@@ -204,6 +212,29 @@ def backwardPropStep(dataIndex, y, y_T):
 		backwardPropLayerGradients(layerId, y, y_T)
 
 
+def visualize():
+	xVals = deciRange(0.0, 1.0, 0.01)
+
+	yValsToApprox = []
+	for x in xVals:
+		yValsToApprox.append(toApproximate(x))
+
+	yValsMlp = []
+	for x in xVals:
+		yValsMlp.append(forwardPropStep(x))
+
+	# Create the mathplot graph
+	import pylab
+	pylab.xlabel("x")
+	pylab.ylabel("y / y_t")
+	pylab.plot(xVals, yValsToApprox)
+	pylab.scatter(xVals, yValsMlp)
+	#pylab.xlim(0.0, 1.0)
+	pylab.show()
+
+
+
+
 for iterationId in range(1000):
 
 	print  "x\ty\ty_T\terror"
@@ -217,6 +248,11 @@ for iterationId in range(1000):
 
 		backwardPropStep(dataIndex, y, y_T)
 
+	# Visualize the current approximation quality (& exit afterwards)
+	if iterationId == 2:
+		visualize()
+		exit()
+
 	# adjust weights & reset gradients
 	lgi = range(len(n) - 1)
 	lgi.reverse()
@@ -226,7 +262,5 @@ for iterationId in range(1000):
 				wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / len(inputs)
 				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - wDelta
 				grad[layerId][neuronId][postNeuronId] = 0.0
-
-
 
 
