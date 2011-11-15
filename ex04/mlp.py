@@ -17,9 +17,9 @@ alpha = 0.5
 
 learnRate = 0.5
 
-biasS = 1.0
+biasS = 1.0 # the activitation of the bias neuron
 
-# number of neurons per layer (counting the bias)
+# number of neurons per layer (NOT counting the bias)
 # n[layer] = no.
 n = [1, 3, 1]
 
@@ -29,9 +29,12 @@ n = [1, 3, 1]
 w = []
 
 # local inputs
+# h[layerId][neuronId]
 h = []
 
 # transfer functions
+# the matrices contain the corresponding function for each neuron in
+# each layer
 t = []
 td = []
 
@@ -42,7 +45,7 @@ d = []
 grad = []
 
 # activities
-# s[depth][neuronfrom]
+# S[layerId][neuronfrom]
 S = []
 
 # input data set
@@ -145,17 +148,17 @@ finally:
 
 # Forward propagation
 def forwardPropLayer(layerId):
-	for neuronId in range(n[layerId]):
+	for neuronId in range(n[layerId]): # for each neuron in this layer
 		nPre = n[layerId - 1]
 		# bias * thresholdWeight
-		hCur = 1 * w[layerId - 1][0][neuronId]
-		for preNeuronId in range(n[layerId - 1] + 1): 
+		hCur = 1 * w[layerId - 1][0][neuronId] # input sum for this neuron
+		for preNeuronId in range(n[layerId - 1] + 1): # for each neuron of the prev. layer
 			SWithBias = [biasS] + S[layerId - 1]
 			Spre = SWithBias[preNeuronId]
 			wcur = w[layerId - 1][preNeuronId][neuronId]
-			hCur = hCur + (Spre * wcur)
-		h[layerId - 1][neuronId] = hCur
-		S[layerId][neuronId] = t[layerId - 1][neuronId](hCur)
+			hCur = hCur + (Spre * wcur) # add prod. of prev. neuron activitation and it's weight
+		h[layerId - 1][neuronId] = hCur # this neuron's total input
+		S[layerId][neuronId] = t[layerId - 1][neuronId](hCur) # this neuron's activitation
 
 
 
@@ -164,33 +167,36 @@ def forwardPropStep(x):
 	S[0] = [x]
 
 	# activities for hidden layers
-	for layerId in range(len(n) - 1):
+	for layerId in range(len(n) - 1): # propagate info from layer to layer
 		forwardPropLayer(layerId + 1)
 
-	y_T = S[len(n) - 1][0]
+	y_T = S[len(n) - 1][0] # the nn's final output
 
 	return y_T
 
 
 # Backwards propagation
 def backwardPropLayerLocalErrors(layerId):
-	for neuronId in range(n[layerId] + 1):
-		wdSum = 0.0
-		for postNeuronId in range(n[layerId + 1]):
+	for neuronId in range(n[layerId] + 1): # for each neuron in this layer
+		wdSum = 0.0 # the sum of the weigthed delta from the following neurons
+		for postNeuronId in range(n[layerId + 1]): # for each neuro in the next layer
 			#print "layerId: ", layerId, "neuronId: ", neuronId, "postNeuronId: ", postNeuronId
 			#print w[layerId][neuronId][postNeuronId]
 			#print d[layerId - 1][postNeuronId]
 			#print d[layerId][postNeuronId]
+
+			# sum up the error of each following neuron multiplied with it's weight
 			wdSum += w[layerId][neuronId][postNeuronId] * d[layerId][postNeuronId]
 		if neuronId > 0:
+			# the delta of this neuron (id -1 due to bias index)
 			d[layerId - 1][neuronId - 1] = td[layerId - 1][neuronId - 1](h[layerId - 1][neuronId - 1]) * wdSum
 
 
 def backwardPropLayerGradients(layerId, y, y_T):
 	e_deriv = error_deriv(y, y_T)
-	for neuronId in range(n[layerId] + 1):
-		SWithBias = [biasS] + S[layerId]
-		for postNeuronId in range(n[layerId + 1]):
+	for neuronId in range(n[layerId] + 1): # for each neuron in this layer + the bias
+		SWithBias = [biasS] + S[layerId] # activition of this layer
+		for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
 			grad[layerId][neuronId][postNeuronId] += e_deriv * d[layerId][postNeuronId] * SWithBias[neuronId]
 			# use these for online learning (vs batch-learning)
 			#w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - (learnRate * grad[layerId][neuronId][postNeuronId])
@@ -242,22 +248,22 @@ for iterationId in range(10000):
 	print  "Starting training iteration %i ..." % (iterationId)
 
 	#print  "x\ty\ty_T\terror"
-	for dataIndex in range(len(inputs)):
-		x = inputs[dataIndex][0]
-		y_T = forwardPropStep(x)
+	for dataIndex in range(len(inputs)): # for each datapoint
+		x = inputs[dataIndex][0] # this datapoint's input
+		y_T = forwardPropStep(x) # propagata info
 
-		y = outputs[dataIndex][0]
-		e = error(y, y_T)
+		y = outputs[dataIndex][0] # the desired output
+		e = error(y, y_T) # difference between desired and actual output
 		#print x, "\t", y, "\t", y_T, "\t", e
 
-		backwardPropStep(dataIndex, y, y_T)
+		backwardPropStep(dataIndex, y, y_T) # calculate local errors (deltas)
 
 	# adjust weights & reset gradients
 	lgi = range(len(n) - 1)
 	lgi.reverse()
-	for layerId in lgi:
-		for neuronId in range(n[layerId] + 1):
-			for postNeuronId in range(n[layerId + 1]):
+	for layerId in lgi: # iterate over layers (except input layer) in reversed order
+		for neuronId in range(n[layerId] + 1): # for each neuron of this layer (+bias)
+			for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
 				wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / len(inputs)
 				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
 				grad[layerId][neuronId][postNeuronId] = 0.0
