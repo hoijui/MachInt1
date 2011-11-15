@@ -233,16 +233,23 @@ def visualize_input_space():
 		yValsToApprox.append(toApproximate(x))
 
 	yValsMlp = []
+	yValsSs = [[], [], []]
 	for x in xVals:
 		yValsMlp.append(forwardPropStep(x))
+		for activity in range(len(S[1])):
+			yValsSs[activity].append(S[1][activity])
 
 	# Create the mathplot graph
 	pylab.xlabel("x")
 	pylab.ylabel("y / y_t")
-	pylab.plot(xVals, yValsToApprox, color='red')
-	pylab.scatter(xVals, yValsMlp, color='blue')
-	pylab.scatter(inputs, outputs, color='yellow')
+	pylab.plot(xVals, yValsToApprox, color='red', label='sin()')
+	pylab.scatter(xVals, yValsMlp, color='blue', label='S[2][0]')
+	pylab.scatter(inputs, outputs, color='yellow', label='smpl')
+	for activity in range(len(yValsSs)):
+		plotLabel = 'S[1][%i]' % (activity)
+		pylab.plot(xVals, yValsSs[activity], color='green', label=plotLabel)
 	#pylab.xlim(0.0, 1.0)
+	pylab.legend()
 	pylab.show()
 
 def visualize_ET_over_iterations(ETs):
