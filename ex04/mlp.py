@@ -4,7 +4,7 @@
 # authors: Rolf Schroeder & Robin Vobruba
 #
 
-import math, random, time
+import math, random, time, pylab
 
 random.seed()
 last_rand=random.random()
@@ -241,23 +241,38 @@ def visualize():
 	#pylab.xlim(0.0, 1.0)
 	pylab.show()
 
+def visualize_ET_over_iterations(ETs):
+	xVals = deciRange(1, len(ETs), 1)
+	yVals = ETs
+
+	# Create the mathplot graph
+	pylab.xlabel("iterations")
+	pylab.ylabel("ET")
+	pylab.plot(xVals, yVals)
+	pylab.show()
 
 
-
+ETs = []
 for iterationId in range(10000):
 
 	print  "Starting training iteration %i ..." % (iterationId)
 
 	#print  "x\ty\ty_T\terror"
-	for dataIndex in range(len(inputs)): # for each datapoint
+	ETCur = 0.0
+	N = len(inputs)
+	for dataIndex in range(N): # for each datapoint
 		x = inputs[dataIndex][0] # this datapoint's input
 		y_T = forwardPropStep(x) # propagata info
 
 		y = outputs[dataIndex][0] # the desired output
 		e = error(y, y_T) # difference between desired and actual output
+		ETCur += e
 		#print x, "\t", y, "\t", y_T, "\t", e
 
 		backwardPropStep(dataIndex, y, y_T) # calculate local errors (deltas)
+	ETCur = ETCur / N
+	ETs.append(ETCur)
+
 
 	# adjust weights & reset gradients
 	lgi = range(len(n) - 1)
@@ -265,7 +280,7 @@ for iterationId in range(10000):
 	for layerId in lgi: # iterate over layers (except input layer) in reversed order
 		for neuronId in range(n[layerId] + 1): # for each neuron of this layer (+bias)
 			for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
-				wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / len(inputs)
+				wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / N
 				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
 				grad[layerId][neuronId][postNeuronId] = 0.0
 
