@@ -151,8 +151,7 @@ def forwardPropLayer(layerId):
 
 
 
-def forwardPropStep(dataIndex):
-	x = inputs[dataIndex][0]
+def forwardPropStep(x):
 	# "activities" of layer 0 (e.g. inputs)
 	S[0] = [x]
 
@@ -161,11 +160,8 @@ def forwardPropStep(dataIndex):
 		forwardPropLayer(layerId + 1)
 
 	y_T = S[len(n) - 1][0]
-	y = outputs[dataIndex][0]
-	e = error(y, y_T)
 
-	print x, "\t", y, "\t", y_T, "\t", e
-	return y, y_T
+	return y_T
 
 
 # Backwards propagation
@@ -212,7 +208,13 @@ for iterationId in range(1000):
 
 	print  "x\ty\ty_T\terror"
 	for dataIndex in range(len(inputs)):
-		y, y_T = forwardPropStep(dataIndex)
+		x = inputs[dataIndex][0]
+		y_T = forwardPropStep(x)
+
+		y = outputs[dataIndex][0]
+		e = error(y, y_T)
+		print x, "\t", y, "\t", y_T, "\t", e
+
 		backwardPropStep(dataIndex, y, y_T)
 
 	# adjust weights & reset gradients
