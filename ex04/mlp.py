@@ -151,7 +151,7 @@ def forwardPropLayer(layerId):
 	for neuronId in range(n[layerId]): # for each neuron in this layer
 		nPre = n[layerId - 1]
 		# bias * thresholdWeight
-		hCur = 1 * w[layerId - 1][0][neuronId] # input sum for this neuron
+		hCur = 0.0 # input sum for this neuron
 		for preNeuronId in range(n[layerId - 1] + 1): # for each neuron of the prev. layer
 			SWithBias = [biasS] + S[layerId - 1]
 			Spre = SWithBias[preNeuronId]
