@@ -237,23 +237,20 @@ def visualize():
 
 
 
-for iterationId in range(1000):
+for iterationId in range(10000):
 
-	print  "x\ty\ty_T\terror"
+	print  "Starting training iteration %i ..." % (iterationId)
+
+	#print  "x\ty\ty_T\terror"
 	for dataIndex in range(len(inputs)):
 		x = inputs[dataIndex][0]
 		y_T = forwardPropStep(x)
 
 		y = outputs[dataIndex][0]
 		e = error(y, y_T)
-		print x, "\t", y, "\t", y_T, "\t", e
+		#print x, "\t", y, "\t", y_T, "\t", e
 
 		backwardPropStep(dataIndex, y, y_T)
-
-	# Visualize the current approximation quality (& exit afterwards)
-	if iterationId == 2:
-		visualize()
-		exit()
 
 	# adjust weights & reset gradients
 	lgi = range(len(n) - 1)
@@ -264,5 +261,11 @@ for iterationId in range(1000):
 				wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / len(inputs)
 				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - wDelta
 				grad[layerId][neuronId][postNeuronId] = 0.0
+
+
+# Visualize the current approximation quality
+print  "\nVisualize the result ..."
+visualize()
+exit(0)
 
 
