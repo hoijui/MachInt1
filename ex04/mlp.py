@@ -174,7 +174,7 @@ def forwardPropStep(x):
 
 # Backwards propagation
 def backwardPropLayerLocalErrors(layerId):
-	for neuronId in range(n[layerId]):
+	for neuronId in range(n[layerId] + 1):
 		wdSum = 0.0
 		for postNeuronId in range(n[layerId + 1]):
 			#print "layerId: ", layerId, "neuronId: ", neuronId, "postNeuronId: ", postNeuronId
@@ -182,12 +182,13 @@ def backwardPropLayerLocalErrors(layerId):
 			#print d[layerId - 1][postNeuronId]
 			#print d[layerId][postNeuronId]
 			wdSum += w[layerId][neuronId][postNeuronId] * d[layerId][postNeuronId]
-		d[layerId - 1][neuronId] = td[layerId - 1][neuronId](h[layerId - 1][neuronId]) * wdSum
+		if neuronId > 0:
+			d[layerId - 1][neuronId - 1] = td[layerId - 1][neuronId - 1](h[layerId - 1][neuronId - 1]) * wdSum
 
 
 def backwardPropLayerGradients(layerId, y, y_T):
 	e_deriv = error_deriv(y, y_T)
-	for neuronId in range(n[layerId]):
+	for neuronId in range(n[layerId] + 1):
 		SWithBias = [biasS] + S[layerId]
 		for postNeuronId in range(n[layerId + 1]):
 			grad[layerId][neuronId][postNeuronId] += e_deriv * d[layerId][postNeuronId] * SWithBias[neuronId]
@@ -258,7 +259,7 @@ for iterationId in range(1000):
 	lgi = range(len(n) - 1)
 	lgi.reverse()
 	for layerId in lgi:
-		for neuronId in range(n[layerId]):
+		for neuronId in range(n[layerId] + 1):
 			for postNeuronId in range(n[layerId + 1]):
 				wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / len(inputs)
 				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - wDelta
