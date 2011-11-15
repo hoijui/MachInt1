@@ -259,7 +259,7 @@ for iterationId in range(10000):
 		for neuronId in range(n[layerId] + 1):
 			for postNeuronId in range(n[layerId + 1]):
 				wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / len(inputs)
-				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - wDelta
+				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
 				grad[layerId][neuronId][postNeuronId] = 0.0
 
 
