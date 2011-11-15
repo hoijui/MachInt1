@@ -242,6 +242,7 @@ def visualize_input_space():
 	# Create the mathplot graph
 	pylab.xlabel("x")
 	pylab.ylabel("y / y_t")
+	pylab.plot([0.0, 1.0], [0.0, 0.0], color='black')
 	pylab.plot(xVals, yValsToApprox, color='red', label='sin()')
 	pylab.scatter(xVals, yValsMlp, color='blue', label='S[2][0]')
 	pylab.scatter(inputs, outputs, color='yellow', label='smpl')
