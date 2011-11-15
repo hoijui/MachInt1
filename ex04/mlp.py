@@ -231,6 +231,7 @@ def visualize():
 	pylab.ylabel("y / y_t")
 	pylab.plot(xVals, yValsToApprox)
 	pylab.scatter(xVals, yValsMlp)
+	pylab.scatter(inputs, outputs)
 	#pylab.xlim(0.0, 1.0)
 	pylab.show()
 
