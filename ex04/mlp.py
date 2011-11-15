@@ -225,7 +225,7 @@ def backwardPropStep(dataIndex, y, y_T):
 		backwardPropLayerGradients(layerId, y, y_T)
 
 
-def visualize():
+def visualize_input_space():
 	xVals = deciRange(0.0, 1.0, 0.01)
 
 	yValsToApprox = []
@@ -237,7 +237,6 @@ def visualize():
 		yValsMlp.append(forwardPropStep(x))
 
 	# Create the mathplot graph
-	import pylab
 	pylab.xlabel("x")
 	pylab.ylabel("y / y_t")
 	pylab.plot(xVals, yValsToApprox, color='red')
@@ -302,6 +301,11 @@ for iterationId in range(maxIterations):
 				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
 				grad[layerId][neuronId][postNeuronId] = 0.0
 
+
+
+def visualize():
+	visualize_input_space()
+	visualize_ET_over_iterations(ETs)
 
 # Visualize the current approximation quality
 print  "\nVisualize the result ..."
