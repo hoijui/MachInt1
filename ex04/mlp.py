@@ -75,6 +75,10 @@ def error(y, yt):
 def error_deriv(y, yt):
 	return (y - yt)
 
+def toApproximate(x):
+	return math.sin(2*math.pi*x)
+
+
 def matrix(columns, rows, initializerFunc=initZero):
 	m = [[0 for r in range(rows)] for c in range(columns)]
 	for c in range(columns):
