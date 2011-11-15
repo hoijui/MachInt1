@@ -87,7 +87,7 @@ def matrix(columns, rows, initializerFunc=initZero):
 	return m
 
 def random_in_interval(x):
-	return  random.uniform(-x, x)
+	return random.uniform(-x, x)
 
 
 ###### INIT ######
@@ -189,7 +189,7 @@ def backwardPropLayerGradients(layerId, y, y_T):
 
 def backwardPropStep(dataIndex, y, y_T):
 	# local errors of the output neurons
-	d[1] = [td[1][0](h[1][0])]
+	d[1][0] = td[1][0](h[1][0])
 
 	# local errors for hidden layers
 	llei = range(1, len(n) - 1)
