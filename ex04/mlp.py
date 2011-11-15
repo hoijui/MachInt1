@@ -7,7 +7,6 @@
 import math, random, time, pylab
 
 random.seed()
-last_rand=random.random()
 
 
 # Define the networks component vars
