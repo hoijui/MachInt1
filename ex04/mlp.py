@@ -223,7 +223,8 @@ for iterationId in range(1000):
 	for layerId in lgi:
 		for neuronId in range(n[layerId]):
 			for postNeuronId in range(n[layerId + 1]):
-				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - (learnRate * grad[layerId][neuronId][postNeuronId])
+				wDelta = learnRate * grad[layerId][neuronId][postNeuronId]
+				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - wDelta
 				grad[layerId][neuronId][postNeuronId] = 0.0
 
 
