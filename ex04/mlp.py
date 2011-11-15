@@ -148,12 +148,12 @@ finally:
 
 # Forward propagation
 def forwardPropLayer(layerId):
+	SWithBias = [biasS] + S[layerId - 1] # activitation from the prev. layer
 	for neuronId in range(n[layerId]): # for each neuron in this layer
 		nPre = n[layerId - 1]
 		# bias * thresholdWeight
 		hCur = 0.0 # input sum for this neuron
 		for preNeuronId in range(n[layerId - 1] + 1): # for each neuron of the prev. layer
-			SWithBias = [biasS] + S[layerId - 1]
 			Spre = SWithBias[preNeuronId]
 			wcur = w[layerId - 1][preNeuronId][neuronId]
 			hCur = hCur + (Spre * wcur) # add prod. of prev. neuron activitation and it's weight
@@ -193,9 +193,9 @@ def backwardPropLayerLocalErrors(layerId):
 
 
 def backwardPropLayerGradients(layerId, y, y_T):
+	SWithBias = [biasS] + S[layerId] # activition of this layer
 	e_deriv = error_deriv(y, y_T)
 	for neuronId in range(n[layerId] + 1): # for each neuron in this layer + the bias
-		SWithBias = [biasS] + S[layerId] # activition of this layer
 		for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
 			grad[layerId][neuronId][postNeuronId] += e_deriv * d[layerId][postNeuronId] * SWithBias[neuronId]
 			# use these for online learning (vs batch-learning)
