@@ -16,6 +16,12 @@ last_rand=random.random()
 alpha = 0.5
 
 learnRate = 0.5
+adaptiveLearning = True
+if (adaptiveLearning):
+	minConverged = 0.00001
+	adaptiveLearnRateFactorGreaterThanOne = 1.02
+	adaptiveLearnRateFactorSmallerThanOne = 0.5
+maxIterations = 9000
 
 biasS = 1.0 # the activitation of the bias neuron
 
@@ -253,12 +259,13 @@ def visualize_ET_over_iterations(ETs):
 
 
 ETs = []
-for iterationId in range(10000):
+ETCur = 0.0
+for iterationId in range(maxIterations):
 
 	print  "Starting training iteration %i ..." % (iterationId)
 
 	#print  "x\ty\ty_T\terror"
-	ETCur = 0.0
+	ETlast = ETCur
 	N = len(inputs)
 	for dataIndex in range(N): # for each datapoint
 		x = inputs[dataIndex][0] # this datapoint's input
@@ -273,6 +280,18 @@ for iterationId in range(10000):
 	ETCur = ETCur / N
 	ETs.append(ETCur)
 
+
+	if (adaptiveLearning):
+		deltaET = ETCur - ETlast
+		#print ETCur, ETlast, deltaET
+		# stop if needed
+		if ((deltaET / ETCur)  < minConverged):
+			print("converged")
+			break
+		elif (deltaET < 0):
+			learnRate = learnRate * adaptiveLearnRateFactorGreaterThanOne
+		else:
+			learnRate = learnRate * adaptiveLearnRateFactorSmallerThanOne
 
 	# adjust weights & reset gradients
 	lgi = range(len(n) - 1)
