@@ -235,9 +235,9 @@ def visualize():
 	import pylab
 	pylab.xlabel("x")
 	pylab.ylabel("y / y_t")
-	pylab.plot(xVals, yValsToApprox)
-	pylab.scatter(xVals, yValsMlp)
-	pylab.scatter(inputs, outputs)
+	pylab.plot(xVals, yValsToApprox, color='red')
+	pylab.scatter(xVals, yValsMlp, color='blue')
+	pylab.scatter(inputs, outputs, color='yellow')
 	#pylab.xlim(0.0, 1.0)
 	pylab.show()
 
