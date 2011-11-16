@@ -302,7 +302,7 @@ def visualize():
 	pylab.show()
 
 ETs = []
-ETlast = 100.0
+ETlast = 1.0
 for iterationId in range(maxIterations):
 
 	print  "Starting training iteration %i ..." % (iterationId)
