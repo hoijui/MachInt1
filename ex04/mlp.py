@@ -17,6 +17,7 @@ maxIterations = 3000
 adaptiveLearning = False
 onlineLearning = False
 nHidden = 3
+learnRate = 0.5
 
 # Prints how to use this script to the screen
 def usage():
@@ -27,11 +28,12 @@ def usage():
     -n <num> : (Max) number of iterations (default: %i)
     -o       : Use online-learning, instead of batch-learning (default: off)
     -h <num> : Number of hidden neurons (default: %i)
+    -l <num> : (Initial) learning rate (default: %f)
 
-    """ % (sys.argv[0], maxIterations, nHidden)
+    """ % (sys.argv[0], maxIterations, nHidden, learnRate)
     sys.exit(-1)
 try:
-    opts, files = getopt.getopt(sys.argv[1:],"an:oh:")
+    opts, files = getopt.getopt(sys.argv[1:],"an:oh:l:")
 except getopt.GetoptError:
     usage()
 
@@ -44,13 +46,14 @@ for opt, arg in opts:
 	onlineLearning = True
     if opt == '-h':
 	nHidden = int(arg)
+    if opt == '-l':
+	learnRate = float(arg)
 
 # Define the networks component vars
 
 # interval (from -alpha to alpha)
 alpha = 0.5
 
-learnRate = 0.5
 if (adaptiveLearning):
 	minConverged = 0.00001
 	adaptiveLearnRateFactorGreaterThanOne = 1.02
