@@ -257,7 +257,8 @@ def visualize():
 	yVals = ETs
 	pylab.xlabel("iterations")
 	pylab.ylabel("ET")
-	pylab.plot(xVals, yVals)
+	pylab.plot(xVals, yVals, label="ET")
+	pylab.legend()
 	pylab.show()
 
 ETs = []
