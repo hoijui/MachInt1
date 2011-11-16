@@ -4,10 +4,39 @@
 # authors: Rolf Schroeder & Robin Vobruba
 #
 
-import math, random, time, pylab
+import math
+import random
+import time
+import pylab
+import sys
+import getopt
 
 random.seed()
 
+maxIterations = 9000
+adaptiveLearning = False
+
+# Prints how to use this script to the screen
+def usage():
+    print """Usage: %s
+    Approximate sin() with an MLP.
+
+    -a       : Use adaptive learning (default: off)
+    -n <num> : (Max) number of iterations (default %i)
+
+    """ % (sys.argv[0], maxIterations)
+    sys.exit(-1)
+try:
+    opts, files = getopt.getopt(sys.argv[1:],"an:")
+except getopt.GetoptError:
+    usage()
+
+for opt, arg in opts:
+    if opt == '-a':
+	adaptiveLearning = True
+    if opt == '-n':
+	print "arg: ", arg
+	maxIterations = int(arg)
 
 # Define the networks component vars
 
@@ -15,12 +44,10 @@ random.seed()
 alpha = 0.5
 
 learnRate = 0.5
-adaptiveLearning = True
 if (adaptiveLearning):
 	minConverged = 0.00001
 	adaptiveLearnRateFactorGreaterThanOne = 1.02
 	adaptiveLearnRateFactorSmallerThanOne = 0.5
-maxIterations = 9000
 
 biasS = 1.0 # the activitation of the bias neuron
 
