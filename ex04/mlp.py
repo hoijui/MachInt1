@@ -15,7 +15,7 @@ random.seed()
 alpha = 0.5
 
 learnRate = 0.5
-adaptiveLearning = True
+adaptiveLearning = False
 if (adaptiveLearning):
 	minConverged = 0.00001
 	adaptiveLearnRateFactorGreaterThanOne = 1.02
@@ -224,8 +224,9 @@ def backwardPropStep(dataIndex, y, y_T):
 	for layerId in lgi:
 		backwardPropLayerGradients(layerId, y, y_T)
 
-
-def visualize_input_space():
+def visualize():
+	# plot hidden/output activitions, datapoints and current approx.
+	pylab.subplot(2,1,1)
 	xVals = deciRange(0.0, 1.0, 0.01)
 
 	yValsToApprox = []
@@ -238,8 +239,6 @@ def visualize_input_space():
 		yValsMlp.append(forwardPropStep(x))
 		for activity in range(len(S[1])):
 			yValsSs[activity].append(S[1][activity])
-
-	# Create the mathplot graph
 	pylab.xlabel("x")
 	pylab.ylabel("y / y_t")
 	pylab.plot([0.0, 1.0], [0.0, 0.0], color='black')
@@ -251,18 +250,15 @@ def visualize_input_space():
 		pylab.plot(xVals, yValsSs[activity], color='green', label=plotLabel)
 	#pylab.xlim(0.0, 1.0)
 	pylab.legend()
-	pylab.show()
 
-def visualize_ET_over_iterations(ETs):
+	# plot ET over iterations
+	pylab.subplot(2,1,2)
 	xVals = deciRange(1, len(ETs), 1)
 	yVals = ETs
-
-	# Create the mathplot graph
 	pylab.xlabel("iterations")
 	pylab.ylabel("ET")
 	pylab.plot(xVals, yVals)
 	pylab.show()
-
 
 ETs = []
 ETCur = 0.0
@@ -309,11 +305,6 @@ for iterationId in range(maxIterations):
 				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
 				grad[layerId][neuronId][postNeuronId] = 0.0
 
-
-
-def visualize():
-	visualize_input_space()
-	visualize_ET_over_iterations(ETs)
 
 # Visualize the current approximation quality
 print  "\nVisualize the result ..."
