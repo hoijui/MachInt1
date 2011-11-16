@@ -274,13 +274,13 @@ def visualize():
 	pylab.show()
 
 ETs = []
-ETCur = 0.0
+ETlast = 100.0
 for iterationId in range(maxIterations):
 
 	print  "Starting training iteration %i ..." % (iterationId)
 
 	#print  "x\ty\ty_T\terror"
-	ETlast = ETCur
+	ETCur = 0.0
 	N = len(inputs)
 	for dataIndex in range(N): # for each datapoint
 		x = inputs[dataIndex][0] # this datapoint's input
@@ -298,7 +298,7 @@ for iterationId in range(maxIterations):
 
 	if (adaptiveLearning):
 		deltaET = ETCur - ETlast
-		# print ETCur, ETlast, deltaET
+		#print ETCur, ETlast, deltaET
 		# stop if needed
 		if (math.fabs(deltaET / ETCur)  < minConverged):
 			print("converged")
@@ -307,6 +307,7 @@ for iterationId in range(maxIterations):
 			learnRate = learnRate * adaptiveLearnRateFactorGreaterThanOne
 		else:
 			learnRate = learnRate * adaptiveLearnRateFactorSmallerThanOne
+	ETlast = ETCur
 
 	# adjust weights & reset gradients
 	lgi = range(len(n) - 1)
