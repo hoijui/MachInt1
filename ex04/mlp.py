@@ -266,7 +266,7 @@ def backwardPropStep(dataIndex, y, y_T):
 
 def visualize():
 	# plot hidden/output activitions, datapoints and current approx.
-	pylab.subplot(2,1,1)
+	pylab.subplot(3,1,1)
 	xVals = deciRange(0.0, 1.0, 0.01)
 
 	yValsToApprox = []
@@ -292,16 +292,28 @@ def visualize():
 	pylab.legend()
 
 	# plot ET over iterations
-	pylab.subplot(2,1,2)
+	pylab.subplot(3,1,2)
 	xVals = range(len(ETs))
 	yVals = ETs
 	pylab.xlabel("iterations")
 	pylab.ylabel("y")
 	pylab.plot(xVals, yVals, color='blue', label="ET")
 	pylab.legend()
+
+	# plot deltaET over iterations
+	pylab.subplot(3,1,3)
+	pylab.xlabel("iterations")
+	pylab.ylabel("y")
+	xVals2 = range(len(deltaETs))
+	yVals2 = deltaETs
+	pylab.plot(xVals2, yVals2, color='green', label="delta-ET")
+	pylab.ylim(0.0, 0.0003)
+	pylab.legend()
+
 	pylab.show()
 
 ETs = []
+deltaETs = []
 ETlast = 1.0
 for iterationId in range(maxIterations):
 
@@ -325,10 +337,10 @@ for iterationId in range(maxIterations):
 		backwardPropStep(dataIndex, y, y_T) # calculate local errors (deltas)
 	ETCur = ETCur / N
 	ETs.append(ETCur)
-
+	deltaET = ETCur - ETlast
+	deltaETs.append(math.fabs(deltaET))
 
 	if (adaptiveLearning):
-		deltaET = ETCur - ETlast
 		#print ETCur, ETlast, deltaET
 		# stop if needed
 		if (math.fabs(deltaET / ETCur)  < minConverged):
