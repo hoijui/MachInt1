@@ -226,11 +226,6 @@ def backwardPropLayerLocalErrors(layerId):
 	for neuronId in range(n[layerId] + 1): # for each neuron in this layer
 		wdSum = 0.0 # the sum of the weigthed delta from the following neurons
 		for postNeuronId in range(n[layerId + 1]): # for each neuro in the next layer
-			#print "layerId: ", layerId, "neuronId: ", neuronId, "postNeuronId: ", postNeuronId
-			#print w[layerId][neuronId][postNeuronId]
-			#print d[layerId - 1][postNeuronId]
-			#print d[layerId][postNeuronId]
-
 			# sum up the error of each following neuron multiplied with it's weight
 			wdSum += w[layerId][neuronId][postNeuronId] * d[layerId][postNeuronId]
 		if neuronId > 0:
