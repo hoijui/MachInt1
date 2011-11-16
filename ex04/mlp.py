@@ -293,11 +293,11 @@ def visualize():
 
 	# plot ET over iterations
 	pylab.subplot(2,1,2)
-	xVals = deciRange(1, len(ETs), 1)
+	xVals = range(len(ETs))
 	yVals = ETs
 	pylab.xlabel("iterations")
-	pylab.ylabel("ET")
-	pylab.plot(xVals, yVals, label="ET")
+	pylab.ylabel("y")
+	pylab.plot(xVals, yVals, color='blue', label="ET")
 	pylab.legend()
 	pylab.show()
 
