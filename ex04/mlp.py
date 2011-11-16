@@ -13,7 +13,7 @@ import getopt
 
 random.seed()
 
-maxIterations = 9000
+maxIterations = 3000
 adaptiveLearning = False
 onlineLearning = False
 
