@@ -15,6 +15,7 @@ random.seed()
 
 maxIterations = 9000
 adaptiveLearning = False
+onlineLearning = False
 
 # Prints how to use this script to the screen
 def usage():
@@ -23,11 +24,12 @@ def usage():
 
     -a       : Use adaptive learning (default: off)
     -n <num> : (Max) number of iterations (default %i)
+    -o       : Use online-learning, instead of batch-learning (default: off)
 
     """ % (sys.argv[0], maxIterations)
     sys.exit(-1)
 try:
-    opts, files = getopt.getopt(sys.argv[1:],"an:")
+    opts, files = getopt.getopt(sys.argv[1:],"an:o")
 except getopt.GetoptError:
     usage()
 
@@ -37,6 +39,8 @@ for opt, arg in opts:
     if opt == '-n':
 	print "arg: ", arg
 	maxIterations = int(arg)
+    if opt == '-o':
+	onlineLearning = True
 
 # Define the networks component vars
 
@@ -243,8 +247,10 @@ def backwardPropLayerGradients(layerId, y, y_T):
 		for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
 			grad[layerId][neuronId][postNeuronId] += e_deriv * d[layerId][postNeuronId] * SWithBias[neuronId]
 			# use these for online learning (vs batch-learning)
-			#w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] - (learnRate * grad[layerId][neuronId][postNeuronId])
-			#grad[layerId][neuronId][postNeuronId] = 0.0
+			if onlineLearning:
+				wDelta = learnRate * (learnRate * grad[layerId][neuronId][postNeuronId])
+				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
+				grad[layerId][neuronId][postNeuronId] = 0.0
 
 
 def backwardPropStep(dataIndex, y, y_T):
@@ -309,7 +315,10 @@ for iterationId in range(maxIterations):
 	#print  "x\ty\ty_T\terror"
 	ETCur = 0.0
 	N = len(inputs)
-	for dataIndex in range(N): # for each datapoint
+	sampleIndices = range(N)
+	if onlineLearning:
+		random.shuffle(sampleIndices)
+	for dataIndex in sampleIndices: # for each datapoint
 		x = inputs[dataIndex][0] # this datapoint's input
 		y_T = forwardPropStep(x) # propagata info
 
@@ -337,14 +346,15 @@ for iterationId in range(maxIterations):
 	ETlast = ETCur
 
 	# adjust weights & reset gradients
-	lgi = range(len(n) - 1)
-	lgi.reverse()
-	for layerId in lgi: # iterate over layers (except input layer) in reversed order
-		for neuronId in range(n[layerId] + 1): # for each neuron of this layer (+bias)
-			for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
-				wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / N
-				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
-				grad[layerId][neuronId][postNeuronId] = 0.0
+	if not onlineLearning:
+		lgi = range(len(n) - 1)
+		lgi.reverse()
+		for layerId in lgi: # iterate over layers (except input layer) in reversed order
+			for neuronId in range(n[layerId] + 1): # for each neuron of this layer (+bias)
+				for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
+					wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / N
+					w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
+					grad[layerId][neuronId][postNeuronId] = 0.0
 
 
 # Visualize the current approximation quality
