@@ -15,7 +15,7 @@ random.seed()
 alpha = 0.5
 
 learnRate = 0.5
-adaptiveLearning = False
+adaptiveLearning = True
 if (adaptiveLearning):
 	minConverged = 0.00001
 	adaptiveLearnRateFactorGreaterThanOne = 1.02
@@ -286,9 +286,9 @@ for iterationId in range(maxIterations):
 
 	if (adaptiveLearning):
 		deltaET = ETCur - ETlast
-		#print ETCur, ETlast, deltaET
+		# print ETCur, ETlast, deltaET
 		# stop if needed
-		if ((deltaET / ETCur)  < minConverged):
+		if (math.fabs(deltaET / ETCur)  < minConverged):
 			print("converged")
 			break
 		elif (deltaET < 0):
