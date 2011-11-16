@@ -16,6 +16,7 @@ random.seed()
 maxIterations = 3000
 adaptiveLearning = False
 onlineLearning = False
+nHidden = 3
 
 # Prints how to use this script to the screen
 def usage():
@@ -23,13 +24,14 @@ def usage():
     Approximate sin() with an MLP.
 
     -a       : Use adaptive learning (default: off)
-    -n <num> : (Max) number of iterations (default %i)
+    -n <num> : (Max) number of iterations (default: %i)
     -o       : Use online-learning, instead of batch-learning (default: off)
+    -h <num> : Number of hidden neurons (default: %i)
 
-    """ % (sys.argv[0], maxIterations)
+    """ % (sys.argv[0], maxIterations, nHidden)
     sys.exit(-1)
 try:
-    opts, files = getopt.getopt(sys.argv[1:],"an:o")
+    opts, files = getopt.getopt(sys.argv[1:],"an:oh:")
 except getopt.GetoptError:
     usage()
 
@@ -37,10 +39,11 @@ for opt, arg in opts:
     if opt == '-a':
 	adaptiveLearning = True
     if opt == '-n':
-	print "arg: ", arg
 	maxIterations = int(arg)
     if opt == '-o':
 	onlineLearning = True
+    if opt == '-h':
+	nHidden = int(arg)
 
 # Define the networks component vars
 
@@ -57,7 +60,7 @@ biasS = 1.0 # the activitation of the bias neuron
 
 # number of neurons per layer (NOT counting the bias)
 # n[layer] = no.
-n = [1, 3, 1]
+n = [1, nHidden, 1]
 
 # weights
 # w[layerId][neuronFrom][neuronTo]
@@ -274,7 +277,7 @@ def visualize():
 		yValsToApprox.append(toApproximate(x))
 
 	yValsMlp = []
-	yValsSs = [[], [], []]
+	yValsSs = [[] for r in range(n[1])]
 	for x in xVals:
 		yValsMlp.append(forwardPropStep(x))
 		for activity in range(len(S[1])):
