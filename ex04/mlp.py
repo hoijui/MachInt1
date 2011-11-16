@@ -252,15 +252,15 @@ def visualize():
 		for activity in range(len(S[1])):
 			yValsSs[activity].append(S[1][activity])
 	pylab.xlabel("x")
-	pylab.ylabel("y / y_t")
+	pylab.ylabel("y")
 	pylab.plot([0.0, 1.0], [0.0, 0.0], color='black')
-	pylab.plot(xVals, yValsToApprox, color='red', label='sin()')
-	pylab.scatter(xVals, yValsMlp, color='blue', label='S[2][0]')
-	pylab.scatter(inputs, outputs, color='yellow', label='smpl')
+	pylab.plot(xVals, yValsToApprox, color='red', label='sin(2*PI*x)')
+	pylab.scatter(xVals, yValsMlp, color='blue', label='y_T(x)')
+	pylab.scatter(inputs, outputs, color='yellow', label='samples')
 	for activity in range(len(yValsSs)):
-		plotLabel = 'S[1][%i]' % (activity)
+		plotLabel = 'S hidden %i' % (activity)
 		pylab.plot(xVals, yValsSs[activity], color='green', label=plotLabel)
-	#pylab.xlim(0.0, 1.0)
+	pylab.xlim(-0.05, 1.5)
 	pylab.legend()
 
 	# plot ET over iterations
