@@ -42,6 +42,7 @@ h = []
 # each layer
 t = []
 td = []
+tdo = []
 
 # local errors
 d = []
@@ -67,10 +68,17 @@ def transfer_hidden(x):
 def transfer_hidden_deriv(x):
 	return 1 - math.tanh(x)**2
 
+def transfer_hidden_deriv_optimized(transferVal):
+	tanhX = transferVal
+	return 1 - tanhX**2
+
 def transfer_output(x):
 	return x
 
 def transfer_output_deriv(x):
+	return 1
+
+def transfer_output_deriv_optimized(transferVal):
 	return 1
 
 def weightInitializer():
@@ -123,6 +131,8 @@ t.append([transfer_output] * n[2])
 # transfer functions
 td.append([transfer_hidden_deriv] * n[1])
 td.append([transfer_output_deriv] * n[2])
+tdo.append([transfer_hidden_deriv_optimized] * n[1])
+tdo.append([transfer_output_deriv_optimized] * n[2])
 
 # activities
 for layerId in range(len(n)):
@@ -194,7 +204,9 @@ def backwardPropLayerLocalErrors(layerId):
 			wdSum += w[layerId][neuronId][postNeuronId] * d[layerId][postNeuronId]
 		if neuronId > 0:
 			# the delta of this neuron (id -1 due to bias index)
-			d[layerId - 1][neuronId - 1] = td[layerId - 1][neuronId - 1](h[layerId - 1][neuronId - 1]) * wdSum
+			#d[layerId - 1][neuronId - 1] = td[layerId - 1][neuronId - 1](h[layerId - 1][neuronId - 1]) * wdSum
+			# optimized version
+			d[layerId - 1][neuronId - 1] = td[layerId - 1][neuronId - 1](S[layerId][neuronId - 1]) * wdSum
 
 
 def backwardPropLayerGradients(layerId, y, y_T):
