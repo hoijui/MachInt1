@@ -6,5 +6,6 @@ This repository contains exercise results for a university course.
 Machine Intelligence I WS11/12
 
 ## Authors
-Rolf Schroeder & Robin Vobruba
+Rolf Schroeder (rolf.p.schroeder#campus.tu-berlin.de),
+Robin Vobruba (robin.vobruba#campus.tu-berlin.de)
 
