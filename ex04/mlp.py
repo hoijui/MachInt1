@@ -247,9 +247,8 @@ def backwardPropLayerGradients(layerId, y, y_T):
 	for neuronId in range(n[layerId] + 1): # for each neuron in this layer + the bias
 		for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
 			grad[layerId][neuronId][postNeuronId] += e_deriv * d[layerId][postNeuronId] * SWithBias[neuronId]
-			# use these for online learning (vs batch-learning)
 			if onlineLearning:
-				wDelta = learnRate * (learnRate * grad[layerId][neuronId][postNeuronId])
+				wDelta = learnRate * grad[layerId][neuronId][postNeuronId]
 				w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
 				grad[layerId][neuronId][postNeuronId] = 0.0
 
