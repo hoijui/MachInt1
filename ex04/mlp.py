@@ -18,22 +18,24 @@ adaptiveLearning = False
 onlineLearning = False
 nHidden = 3
 learnRate = 0.5
+samplesFile = "data.txt"
 
 # Prints how to use this script to the screen
 def usage():
     print """Usage: %s
     Approximate sin() with an MLP.
 
-    -a       : Use adaptive learning (default: off)
-    -n <num> : (Max) number of iterations (default: %i)
-    -o       : Use online-learning, instead of batch-learning (default: off)
-    -h <num> : Number of hidden neurons (default: %i)
-    -l <num> : (Initial) learning rate (default: %f)
+    -a           : Use adaptive learning (default: off)
+    -n <num>     : (Max) number of iterations (default: %i)
+    -o           : Use online-learning, instead of batch-learning (default: off)
+    -h <num>     : Number of hidden neurons (default: %i)
+    -l <num>     : (Initial) learning rate (default: %f)
+    -t <file>    : training data file (default: %s)
 
-    """ % (sys.argv[0], maxIterations, nHidden, learnRate)
+    """ % (sys.argv[0], maxIterations, nHidden, learnRate, samplesFile)
     sys.exit(-1)
 try:
-    opts, files = getopt.getopt(sys.argv[1:],"an:oh:l:")
+    opts, files = getopt.getopt(sys.argv[1:],"an:oh:l:t:")
 except getopt.GetoptError:
     usage()
 
@@ -48,6 +50,8 @@ for opt, arg in opts:
 	nHidden = int(arg)
     if opt == '-l':
 	learnRate = float(arg)
+    if opt == '-t':
+	samplesFile = arg
 
 # Define the networks component vars
 
@@ -180,7 +184,7 @@ for layerId in range(len(n)):
 
 # Read the data file
 try:
-	data_f = open('data.txt', 'r')
+	data_f = open(samplesFile, 'r')
 	line = data_f.readline()
 	while line != "":
 		parts = line.split()
