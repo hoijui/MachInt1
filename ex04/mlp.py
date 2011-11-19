@@ -162,14 +162,14 @@ for layerId in range(len(n) - 1):
 	d.append([0.0] * n[layerId + 1])
 
 # transfer functions
-t.append([transfer_hidden] * n[1])
-t.append([transfer_output] * n[2])
-
-# transfer functions
-td.append([transfer_hidden_deriv] * n[1])
-td.append([transfer_output_deriv] * n[2])
-tdo.append([transfer_hidden_deriv_optimized] * n[1])
-tdo.append([transfer_output_deriv_optimized] * n[2])
+for hiddenLayerId in range(1, len(n) - 1):
+	t.append([transfer_hidden] * n[hiddenLayerId])
+	td.append([transfer_hidden_deriv] * n[hiddenLayerId])
+	tdo.append([transfer_hidden_deriv_optimized] * n[hiddenLayerId])
+lastLayerId = len(n) - 1
+t.append([transfer_output] * n[lastLayerId])
+td.append([transfer_output_deriv] * n[lastLayerId])
+tdo.append([transfer_output_deriv_optimized] * n[lastLayerId])
 
 # activities
 for layerId in range(len(n)):
@@ -255,7 +255,8 @@ def backwardPropLayerGradients(layerId, y, y_T):
 
 def backwardPropStep(dataIndex, y, y_T):
 	# local errors of the output neurons
-	d[1][0] = td[1][0](h[1][0])
+	lastLayerId = len(n) - 2
+	d[lastLayerId][0] = td[lastLayerId][0](h[lastLayerId][0])
 
 	# local errors for hidden layers
 	llei = range(1, len(n) - 1)
