@@ -24,8 +24,8 @@ function ret = Error()
 	X
 	w
 	t
-	w' * X
-	ret = 0.5 * sumsq(w' * X - t) +5;
+	#w' * X
+	ret = 0.5 * sumsq(w' * X - t);
 endfunction
 
 function ret = H()
@@ -60,6 +60,6 @@ for i = 0:12
 	#e
 	#w
 	g
-	update_weights(0.2, g);
+	update_weights_grad_descent(0.2, g);
 endfor
 Error()
