@@ -4,7 +4,8 @@
 # X' = transposed(X)
 
 # Weight vector: w[0=>threshold, 1=>input-weight]
-global w = [0.5; 0.5]
+a = 0.5
+global w = [unifrnd(-a, a); unifrnd(-a, a)]
 
 # Output vector: t[trainingSampleId]
 global t = [-0.1, 0.5, 0.5]
@@ -65,7 +66,7 @@ for i = 0:12
 	g = gradient();
 	#e
 	#w
-	g
+	#g
 	update_weights_grad_descent(0.2, g);
 endfor
 Error()
