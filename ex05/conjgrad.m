@@ -3,9 +3,15 @@
 
 # X' = transposed(X)
 
+# Weight vector: w[0=>threshold, 1=>input-weight]
 global w = [0.5; 0.5]
+
+# Output vector: t[trainingSampleId]
 global t = [-0.1, 0.5, 0.5]
-global X = [1, 1, 1; (-1), 0.3, 2]
+
+# Input matrix: X[trainingSampleId][0=>bias, 1=>input]
+global X = [1.0, 1.0, 1.0; (-1.0), 0.3, 2.0]
+
 
 # the neuron's output
 function ret = y(x, w)
@@ -33,7 +39,7 @@ function ret = H()
 	ret = 2 * X * X'
 endfunction
 
-# the gradient for this error
+# Returns the gradient for the current error
 function ret = gradient()
 	global w
 	global X
