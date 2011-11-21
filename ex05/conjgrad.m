@@ -1,5 +1,13 @@
 #! /usr/bin/octave -qf
 
+#
+# Here we are comparing 3 different learning algorithms,
+# demonstrated on a simple perceptron.
+# i)   gradient decsent
+# ii)  line-search
+# iii) conjugate gradient descent
+#
+
 
 # X' = transposed(X)
 
@@ -18,7 +26,7 @@ global t = [-0.1, 0.5, 0.5]
 global X = [1.0, 1.0, 1.0; (-1.0), 0.3, 2.0]
 
 
-# the neuron's output
+# Returns the neuron's output/activity
 function ret = y(x, w)
 	ret = w' * x
 endfunction
