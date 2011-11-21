@@ -62,6 +62,10 @@ function update_weights_line_search(gradient)
 endfunction
 
 #################################
+# save w0/1 for plotting
+w0 = [w(1)];
+w1 = [w(2)];
+
 # 1a) Gradient Descent
 if (exoa == 1)
 	iterations = 100;
@@ -69,6 +73,8 @@ if (exoa == 1)
 	for i = 1:iterations
 		g = gradient();
 		update_weights_grad_descent(rate, g)
+		w0(end+1) = w(1);
+		w1(end+1) = w(2);
 	endfor
 endif
 
@@ -78,6 +84,8 @@ if (exob == 1)
 	for i = 1:iterations
 		g = gradient();
 		update_weights_line_search(g)
+		w0(end+1) = w(1);
+		w1(end+1) = w(2);
 	endfor
 endif
 
@@ -99,6 +107,15 @@ if (exoc == 1)
 		gold = gnew;
 
 		#Error()
+		w0(end+1) = w(1);
+		w1(end+1) = w(2);
 	endfor
 endif
 
+plot(w0, w1)
+title("weight space")
+xlabel("w0");
+ylabel("w1");
+axis([0 10 0 10])
+#legend("uiae");
+print("plot.png", "-dpng")
