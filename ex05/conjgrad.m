@@ -3,6 +3,10 @@
 
 # X' = transposed(X)
 
+exoa = 0;
+exob = 0;
+exoc = 0;
+
 # Weight vector: w[0=>threshold, 1=>input-weight]
 a = 0.5;
 global w = [unifrnd(-a, a); unifrnd(-a, a)]
@@ -46,18 +50,6 @@ function ret = gradient()
 	ret = H() * w + b;
 endfunction
 
-
-#################################
-# 1a)
-iterations = 100;
-rate = 0.5;
-for i = 1:iterations
-	H = 2 * X * X';
-	b = -2 * X * t';
-	g = H * w + b;
-	w = w - rate * g;
-endfor
-
 function update_weights_grad_descent(rate, gradient)
 	global w;
 	w = w - rate * gradient;
@@ -65,16 +57,48 @@ endfunction
 
 function update_weights_line_search(gradient)
 	global w
-	alpha = - (gradient' * gradient ) / (gradient' * H() * gradient)
-	w = w + alpha * gradient
+	alpha = - (gradient' * gradient ) / (gradient' * H() * gradient);
+	w = w + alpha * gradient;
 endfunction
 
+#################################
+# 1a) Gradient Descent
+if (exoa == 1)
+	iterations = 100;
+	rate = 0.5;
+	for i = 1:iterations
+		g = gradient();
+		update_weights_grad_descent(rate, g)
+	endfor
+endif
 
-for i = 0:12
-	#e = Error();
-	#g = gradient();
-	#e
-	#w
-	#g
-	#update_weights_grad_descent(0.2, g);
-endfor
+# 1b) Line search
+if (exob == 1)
+	iterations = 15;
+	for i = 1:iterations
+		g = gradient();
+		update_weights_line_search(g)
+	endfor
+endif
+
+# 1c) Conjugate Gradient
+if (exoc == 1)
+	gold = gradient();
+	w = -gold;
+	d = -gold;
+	iterations = 20;
+	for i = 1:iterations
+		alpha = -(d' * gold) / (d' * H() * d);
+		w = w + alpha * d;
+		gnew = gradient();
+		if (1 == 0)
+			break;
+		endif
+		beta = -(gnew' * gnew) / (gold' * gold);
+		d = gnew + beta * d;
+		gold = gnew;
+
+		#Error()
+	endfor
+endif
+
