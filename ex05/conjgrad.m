@@ -4,7 +4,7 @@
 # X' = transposed(X)
 
 # Weight vector: w[0=>threshold, 1=>input-weight]
-a = 0.5
+a = 0.5;
 global w = [unifrnd(-a, a); unifrnd(-a, a)]
 
 # Output vector: t[trainingSampleId]
@@ -28,16 +28,13 @@ function ret = Error()
 	global X
 	global w
 	global t
-	X
-	w
-	t
-	#w' * X
 	ret = 0.5 * sumsq(w' * X - t);
 endfunction
 
+# H = 2XX'
 function ret = H()
 	global X
-	ret = 2 * X * X'
+	ret = 2 * X * X';
 endfunction
 
 # Returns the gradient for the current error
@@ -48,6 +45,18 @@ function ret = gradient()
 	b = -2 * X * t';
 	ret = H() * w + b;
 endfunction
+
+
+#################################
+# 1a)
+iterations = 100;
+rate = 0.5;
+for i = 1:iterations
+	H = 2 * X * X';
+	b = -2 * X * t';
+	g = H * w + b;
+	w = w - rate * g;
+endfor
 
 function update_weights_grad_descent(rate, gradient)
 	global w;
@@ -63,10 +72,9 @@ endfunction
 
 for i = 0:12
 	#e = Error();
-	g = gradient();
+	#g = gradient();
 	#e
 	#w
 	#g
-	update_weights_grad_descent(0.2, g);
+	#update_weights_grad_descent(0.2, g);
 endfor
-Error()
