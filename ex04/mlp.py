@@ -101,6 +101,8 @@ inputs = []
 # output data set
 outputs = []
 
+ETs = []
+deltaETs = []
 
 
 def transfer_hidden(x):
@@ -327,57 +329,63 @@ def visualize():
 
 	pylab.show()
 
-ETs = []
-deltaETs = []
-ETlast = 1.0
-for iterationId in range(maxIterations):
 
-	print  "Starting training iteration %i ..." % (iterationId)
+def trainNetwork():
+	global learnRate
+	ETs = []
+	deltaETs = []
+	ETlast = 1.0
+	for iterationId in range(maxIterations):
 
-	#print  "x\ty\ty_T\terror"
-	ETCur = 0.0
-	N = len(inputs)
-	sampleIndices = range(N)
-	if onlineLearning:
-		random.shuffle(sampleIndices)
-	for dataIndex in sampleIndices: # for each datapoint
-		x = inputs[dataIndex][0] # this datapoint's input
-		y_T = forwardPropStep(x) # propagata info
+		print  "Starting training iteration %i ..." % (iterationId)
 
-		y = outputs[dataIndex][0] # the desired output
-		e = error(y, y_T) # difference between desired and actual output
-		ETCur += e
-		#print x, "\t", y, "\t", y_T, "\t", e
+		#print  "x\ty\ty_T\terror"
+		ETCur = 0.0
+		N = len(inputs)
+		sampleIndices = range(N)
+		if onlineLearning:
+			random.shuffle(sampleIndices)
+		for dataIndex in sampleIndices: # for each datapoint
+			x = inputs[dataIndex][0] # this datapoint's input
+			y_T = forwardPropStep(x) # propagata info
 
-		backwardPropStep(dataIndex, y, y_T) # calculate local errors (deltas)
-	ETCur = ETCur / N
-	ETs.append(ETCur)
-	deltaET = ETCur - ETlast
-	deltaETs.append(math.fabs(deltaET))
+			y = outputs[dataIndex][0] # the desired output
+			e = error(y, y_T) # difference between desired and actual output
+			ETCur += e
+			#print x, "\t", y, "\t", y_T, "\t", e
 
-	if (adaptiveLearning):
-		#print ETCur, ETlast, deltaET
-		# stop if needed
-		if (math.fabs(deltaET / ETCur)  < minConverged):
-			print("converged")
-			break
-		elif (deltaET < 0):
-			learnRate = learnRate * adaptiveLearnRateFactorGreaterThanOne
-		else:
-			learnRate = learnRate * adaptiveLearnRateFactorSmallerThanOne
-	ETlast = ETCur
+			backwardPropStep(dataIndex, y, y_T) # calculate local errors (deltas)
+		ETCur = ETCur / N
+		ETs.append(ETCur)
+		deltaET = ETCur - ETlast
+		deltaETs.append(math.fabs(deltaET))
 
-	# adjust weights & reset gradients
-	if not onlineLearning:
-		lgi = range(len(n) - 1)
-		lgi.reverse()
-		for layerId in lgi: # iterate over layers (except input layer) in reversed order
-			for neuronId in range(n[layerId] + 1): # for each neuron of this layer (+bias)
-				for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
-					wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / N
-					w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
-					grad[layerId][neuronId][postNeuronId] = 0.0
+		if (adaptiveLearning):
+			#print ETCur, ETlast, deltaET
+			# stop if needed
+			if (math.fabs(deltaET / ETCur)  < minConverged):
+				print("converged")
+				break
+			elif (deltaET < 0):
+				learnRate = learnRate * adaptiveLearnRateFactorGreaterThanOne
+			else:
+				learnRate = learnRate * adaptiveLearnRateFactorSmallerThanOne
+		ETlast = ETCur
 
+		# adjust weights & reset gradients
+		if not onlineLearning:
+			lgi = range(len(n) - 1)
+			lgi.reverse()
+			for layerId in lgi: # iterate over layers (except input layer) in reversed order
+				for neuronId in range(n[layerId] + 1): # for each neuron of this layer (+bias)
+					for postNeuronId in range(n[layerId + 1]): # for each neuron in the next layer
+						wDelta = learnRate * grad[layerId][neuronId][postNeuronId] / N
+						w[layerId][neuronId][postNeuronId] = w[layerId][neuronId][postNeuronId] + wDelta
+						grad[layerId][neuronId][postNeuronId] = 0.0
+	return ETs, deltaETs
+
+
+ETs, deltaETs = trainNetwork()
 
 # Visualize the current approximation quality
 print  "\nVisualize the result ..."
