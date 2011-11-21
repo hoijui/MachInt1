@@ -182,24 +182,29 @@ for layerId in range(len(n)):
 
 ###### LEARNING ######
 
-# Read the data file
-try:
-	data_f = open(samplesFile, 'r')
-	line = data_f.readline()
-	while line != "":
-		parts = line.split()
-		# read the x (input for the sample), and prepend it
-		# with the bias (constant threshold multiplier)
-		inputs.append([float(parts[0])])
-		# read the y (output for the sample)
-		outputs.append([float(parts[1])])
+# Reads a data file
+def readDataFile(filePath):
+	inputs = []
+	outputs = []
+	try:
+		data_f = open(samplesFile, 'r')
 		line = data_f.readline()
-except:
-	print "Failed to parse the data file!"
-	exit(-1)
-finally:
-	data_f.close()
+		while line != "":
+			parts = line.split()
+			# read the x (input for the sample), and prepend it
+			# with the bias (constant threshold multiplier)
+			inputs.append([float(parts[0])])
+			# read the y (output for the sample)
+			outputs.append([float(parts[1])])
+			line = data_f.readline()
+	except:
+		print "Failed to parse the data file!"
+		exit(-1)
+	finally:
+		data_f.close()
+	return inputs, outputs
 
+inputs, outputs = readDataFile(samplesFile)
 
 
 # Forward propagation
