@@ -122,8 +122,9 @@ if (exoc == 1)
 	endfor
 endif
 
+# Plot the weights evolution over the iteration steps
 plot(w0, w1)
-title("weight space")
+title("weight space - evolution")
 xlabel("w0");
 ylabel("w1");
 axis([0 10 0 10])
