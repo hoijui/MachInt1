@@ -126,7 +126,7 @@ function learn_conjugateGradient()
 	gold = gradient();
 	w = -gold;
 	d = -gold;
-	iterations = 20;
+	iterations = 2;
 	for i = 1:iterations
 		alpha = -(d' * gold) / (d' * H() * d);
 		w = w + alpha * d;
