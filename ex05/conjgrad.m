@@ -167,8 +167,6 @@ function plotLearningResults(methodName)
 	title(strcat(methodName, " - weight space - evolution"))
 	xlabel("w0");
 	ylabel("w1");
-	axis([0 10 0 10])
-	#legend("uiae");
 	print(strcat(methodName, "_weightsEvolution.png"), "-dpng")
 
 	# Plot the error evolution over the iteration steps
