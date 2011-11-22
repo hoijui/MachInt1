@@ -70,7 +70,7 @@ function learn_init()
 	e  = [Error()];
 endfunction
 
-# 1a) Gradient Descent
+# 5.1.a Gradient Descent
 function learn_gradientDescent()
 	global w;
 	global w0;
@@ -88,7 +88,7 @@ function learn_gradientDescent()
 	endfor
 endfunction
 
-# 1b) Line search
+# 5.1.b Line search
 function learn_lineSearch()
 	global w;
 	global w0;
@@ -106,7 +106,7 @@ function learn_lineSearch()
 	endfor
 endfunction
 
-# 1c) Conjugate Gradient
+# 5.1.c Conjugate Gradient
 function learn_conjugateGradient()
 	global w;
 	global w0;
