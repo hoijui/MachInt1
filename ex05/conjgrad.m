@@ -64,6 +64,7 @@ endfunction
 # save w0/1 for plotting
 w0 = [w(1)];
 w1 = [w(2)];
+e  = [Error()];
 
 # 1a) Gradient Descent
 if (exoa == 1)
@@ -75,6 +76,7 @@ if (exoa == 1)
 		w = w + rate * g;
 		w0(end+1) = w(1);
 		w1(end+1) = w(2);
+		e(end+1)  = Error();
 	endfor
 endif
 
@@ -88,6 +90,7 @@ if (exob == 1)
 		w = w + alpha * g;
 		w0(end+1) = w(1);
 		w1(end+1) = w(2);
+		e(end+1)  = Error();
 	endfor
 endif
 
@@ -111,6 +114,7 @@ if (exoc == 1)
 		#Error()
 		w0(end+1) = w(1);
 		w1(end+1) = w(2);
+		e(end+1)  = Error();
 	endfor
 endif
 
@@ -132,3 +136,8 @@ ylabel("w1");
 axis([0 10 0 10])
 #legend("uiae");
 print("weightsEvolution.png", "-dpng")
+
+# Plot the error evolution over the iteration steps
+plot(e)
+title("error - evolution")
+print("errorsEvolution.png", "-dpng")
