@@ -28,35 +28,36 @@ global X = [1.0, 1.0, 1.0; input]
 
 
 # Returns the neuron's output/activity
-function ret = y(x, w)
-	ret = w' * x
+function _y = y(x, w)
+	_y = w' * x
+	_y = _y(1) + _y(2)
 endfunction
 
-#function ret = error(y, t)
-#	ret = 0.5 * (y - t)^2
+#function _error = error(y, t)
+#	_error = 0.5 * (y - t)^2
 #endfunction
 
 # the training error
-function ret = Error()
+function _Error = Error()
 	global X
 	global w
 	global t
-	ret = 0.5 * sumsq(w' * X - t);
+	_Error = 0.5 * sumsq(w' * X - t);
 endfunction
 
 # H = 2XX'
-function ret = H()
+function _H = H()
 	global X
-	ret = 2 * X * X';
+	_H = 2 * X * X';
 endfunction
 
 # Returns the gradient for the current error
-function ret = gradient()
+function _gradient = gradient()
 	global w
 	global X
 	global t
 	b = -2 * X * t';
-	ret = H() * w + b;
+	_gradient = H() * w + b;
 endfunction
 
 function update_weights_grad_descent(rate, gradient)
