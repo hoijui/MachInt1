@@ -128,4 +128,4 @@ xlabel("w0");
 ylabel("w1");
 axis([0 10 0 10])
 #legend("uiae");
-print("plot.png", "-dpng")
+print("weightsEvolution.png", "-dpng")
