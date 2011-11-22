@@ -122,6 +122,16 @@ if (exoc == 1)
 	endfor
 endif
 
+
+
+# Plot the samples vs the approximation
+global output = t
+global approxOutput = [y(X(1), w), y(X(2), w), y(X(3), w)]
+title("target space - samples and approximation")
+plot(input, [output; approxOutput])
+legend(["samples"; "approximation"]);
+print("approximation.png", "-dpng")
+
 # Plot the weights evolution over the iteration steps
 plot(w0, w1)
 title("weight space - evolution")
