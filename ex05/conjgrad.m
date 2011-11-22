@@ -69,11 +69,11 @@ e  = [Error()];
 # 1a) Gradient Descent
 if (exoa == 1)
 	global w;
-	iterations = 100;
-	rate = 0.5;
+	iterations = 10;
+	rate = 0.1;
 	for i = 1:iterations
 		g = gradient();
-		w = w + rate * g;
+		w = w - rate * g;
 		w0(end+1) = w(1);
 		w1(end+1) = w(2);
 		e(end+1)  = Error();
