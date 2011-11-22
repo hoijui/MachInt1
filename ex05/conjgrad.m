@@ -11,13 +11,10 @@
 
 # X' = transposed(X)
 
-exoa = 0;
-exob = 0;
-exoc = 0;
 
 # Weight vector: w[0=>threshold, 1=>input-weight]
-a = 0.5;
-global w = [unifrnd(-a, a); unifrnd(-a, a)]
+global wInit = 0.5;
+global w = [0.0; 0.0]
 
 # Output vector: t[trainingSampleId]
 global t = [-0.1, 0.5, 0.5]
@@ -61,14 +58,35 @@ function _gradient = gradient()
 endfunction
 
 #################################
-# save w0/1 for plotting
-w0 = [w(1)];
-w1 = [w(2)];
-e  = [Error()];
+
+global w0
+global w1
+global e
+
+function learn_init()
+	global wInit;
+	global w;
+	global w0;
+	global w1;
+	global e;
+
+	w(1) = unifrnd(-wInit, wInit);
+	w(2) = unifrnd(-wInit, wInit);
+
+	# save w0/1 for plotting
+	w0 = [w(1)];
+	w1 = [w(2)];
+
+	e  = [Error()];
+endfunction
 
 # 1a) Gradient Descent
-if (exoa == 1)
+function learn_gradientDescent()
 	global w;
+	global w0;
+	global w1;
+	global e;
+
 	iterations = 10;
 	rate = 0.1;
 	for i = 1:iterations
@@ -78,11 +96,15 @@ if (exoa == 1)
 		w1(end+1) = w(2);
 		e(end+1)  = Error();
 	endfor
-endif
+endfunction
 
 # 1b) Line search
-if (exob == 1)
-	global w
+function learn_lineSearch()
+	global w;
+	global w0;
+	global w1;
+	global e;
+
 	iterations = 15;
 	for i = 1:iterations
 		g = gradient();
@@ -92,10 +114,15 @@ if (exob == 1)
 		w1(end+1) = w(2);
 		e(end+1)  = Error();
 	endfor
-endif
+endfunction
 
 # 1c) Conjugate Gradient
-if (exoc == 1)
+function learn_conjugateGradient()
+	global w;
+	global w0;
+	global w1;
+	global e;
+
 	gold = gradient();
 	w = -gold;
 	d = -gold;
@@ -111,33 +138,54 @@ if (exoc == 1)
 		d = gnew + beta * d;
 		gold = gnew;
 
-		#Error()
 		w0(end+1) = w(1);
 		w1(end+1) = w(2);
 		e(end+1)  = Error();
 	endfor
-endif
+endfunction
 
 
+function plotLearningResults(methodName)
+	global input;
+	global X;
+	global t;
+	global w;
+	global w0;
+	global w1;
+	global e;
 
-# Plot the samples vs the approximation
-global output = t
-global approxOutput = [y(X(1), w), y(X(2), w), y(X(3), w)]
-title("target space - samples and approximation")
-plot(input, [output; approxOutput])
-legend(["samples"; "approximation"]);
-print("approximation.png", "-dpng")
+	# Plot the samples vs the approximation
+	output = t
+	approxOutput = [y(X(1), w), y(X(2), w), y(X(3), w)]
+	title(strcat(methodName, " - target space - samples and approximation"))
+	plot(input, [output; approxOutput])
+	legend(["samples"; "approximation"]);
+	print(strcat(methodName, "_approximation.png"), "-dpng")
 
-# Plot the weights evolution over the iteration steps
-plot(w0, w1)
-title("weight space - evolution")
-xlabel("w0");
-ylabel("w1");
-axis([0 10 0 10])
-#legend("uiae");
-print("weightsEvolution.png", "-dpng")
+	# Plot the weights evolution over the iteration steps
+	plot(w0, w1)
+	title(strcat(methodName, " - weight space - evolution"))
+	xlabel("w0");
+	ylabel("w1");
+	axis([0 10 0 10])
+	#legend("uiae");
+	print(strcat(methodName, "_weightsEvolution.png"), "-dpng")
 
-# Plot the error evolution over the iteration steps
-plot(e)
-title("error - evolution")
-print("errorsEvolution.png", "-dpng")
+	# Plot the error evolution over the iteration steps
+	plot(e)
+	title(strcat(methodName, " - error - evolution"))
+	print(strcat(methodName, "_errorsEvolution.png"), "-dpng")
+endfunction
+
+
+learn_init()
+learn_gradientDescent()
+plotLearningResults("gradientDescent")
+
+learn_init()
+learn_lineSearch()
+plotLearningResults("lineSearch")
+
+learn_init()
+learn_conjugateGradient()
+plotLearningResults("conjugateGradient")
