@@ -26,8 +26,8 @@ global X = [1.0, 1.0, 1.0; input]
 
 # Returns the neuron's output/activity
 function _y = y(x, w)
-	_y = w' * x
-	_y = _y(1) + _y(2)
+	yVec = w' * x
+	_y = yVec(1) + yVec(2)
 endfunction
 
 #function _error = error(y, t)
