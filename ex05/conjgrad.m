@@ -60,17 +60,6 @@ function _gradient = gradient()
 	_gradient = H() * w + b;
 endfunction
 
-function update_weights_grad_descent(rate, gradient)
-	global w;
-	w = w - rate * gradient;
-endfunction
-
-function update_weights_line_search(gradient)
-	global w
-	alpha = - (gradient' * gradient ) / (gradient' * H() * gradient);
-	w = w + alpha * gradient;
-endfunction
-
 #################################
 # save w0/1 for plotting
 w0 = [w(1)];
@@ -78,11 +67,12 @@ w1 = [w(2)];
 
 # 1a) Gradient Descent
 if (exoa == 1)
+	global w;
 	iterations = 100;
 	rate = 0.5;
 	for i = 1:iterations
 		g = gradient();
-		update_weights_grad_descent(rate, g)
+		w = w + rate * g;
 		w0(end+1) = w(1);
 		w1(end+1) = w(2);
 	endfor
@@ -90,10 +80,12 @@ endif
 
 # 1b) Line search
 if (exob == 1)
+	global w
 	iterations = 15;
 	for i = 1:iterations
 		g = gradient();
-		update_weights_line_search(g)
+		alpha = - (g' * g) / (g' * H() * g);
+		w = w + alpha * g;
 		w0(end+1) = w(1);
 		w1(end+1) = w(2);
 	endfor
