@@ -23,7 +23,8 @@ global w = [unifrnd(-a, a); unifrnd(-a, a)]
 global t = [-0.1, 0.5, 0.5]
 
 # Input matrix: X[trainingSampleId][0=>bias, 1=>input]
-global X = [1.0, 1.0, 1.0; (-1.0), 0.3, 2.0]
+global input = [-1.0, 0.3, 2.0]
+global X = [1.0, 1.0, 1.0; input]
 
 
 # Returns the neuron's output/activity
