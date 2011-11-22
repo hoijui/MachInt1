@@ -24,16 +24,6 @@ global input = [-1.0, 0.3, 2.0]
 global X = [1.0, 1.0, 1.0; input]
 
 
-# Returns the neuron's output/activity
-function _y = y(x, w)
-	yVec = w' * x
-	_y = yVec(1) + yVec(2)
-endfunction
-
-#function _error = error(y, t)
-#	_error = 0.5 * (y - t)^2
-#endfunction
-
 # the training error
 function _Error = Error()
 	global X
@@ -156,7 +146,7 @@ function plotLearningResults(methodName)
 
 	# Plot the samples vs the approximation
 	output = t
-	approxOutput = [y(X(1), w), y(X(2), w), y(X(3), w)]
+	approxOutput = w' * X
 	title(strcat(methodName, " - target space - samples and approximation"))
 	plot(input, [output; approxOutput])
 	legend(["samples"; "approximation"]);
