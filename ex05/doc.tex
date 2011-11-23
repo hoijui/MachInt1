@@ -4,6 +4,7 @@
 \usepackage[utf8x]{inputenc}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{multirow}
 
 % define style of numbering
 \numberwithin{equation}{section} % use separate numbering per section
@@ -29,35 +30,66 @@
 
 \maketitle
 
-\section{Performance}
 
+\newpage
+\section{Algorithms}
 
 
 \subsection{Gradient Descent}
 
 Gradient (or steepest) descent with constant learning rate.
 
-\includegraphics[width=0.33\linewidth]{conjugateGradient_approximation.png}%
-\includegraphics[width=0.33\linewidth]{conjugateGradient_errorsEvolution.png}%
-\includegraphics[width=0.33\linewidth]{conjugateGradient_weightsEvolution.png}
+\includegraphics[width=\linewidth]{gradientDescent_weightsEvolution.png}
+
+\includegraphics[width=0.5\linewidth]{gradientDescent_approximation.png}
+\includegraphics[width=0.5\linewidth]{gradientDescent_errorsEvolution.png}
+
+Usually, this method takes four iterations for the given problem,
+to reach its optimum (the error does not change anymore).
 
 
+\newpage
 \subsection{Line Search}
 
 Steepest descent combined with a line search method to determine the learning rate.
 
-\includegraphics[width=0.33\linewidth]{gradientDescent_approximation.png}%
-\includegraphics[width=0.33\linewidth]{gradientDescent_errorsEvolution.png}%
-\includegraphics[width=0.33\linewidth]{gradientDescent_weightsEvolution.png}
+\includegraphics[width=\linewidth]{lineSearch_weightsEvolution.png}
+
+\includegraphics[width=0.5\linewidth]{lineSearch_approximation.png}
+\includegraphics[width=0.5\linewidth]{lineSearch_errorsEvolution.png}
+
+Usually, this method takes three iterations for the given problem,
+to reach its optimum (the error does not change anymore).
 
 
+\newpage
 \subsection{Conjugate Gradient}
 
 Conjugate gradient method.
 
-\includegraphics[width=0.33\linewidth]{lineSearch_approximation.png}%
-\includegraphics[width=0.33\linewidth]{lineSearch_errorsEvolution.png}%
-\includegraphics[width=0.33\linewidth]{lineSearch_weightsEvolution.png}
+\includegraphics[width=\linewidth]{conjugateGradient_weightsEvolution.png}
+
+\includegraphics[width=0.5\linewidth]{conjugateGradient_approximation.png}
+\includegraphics[width=0.5\linewidth]{conjugateGradient_errorsEvolution.png}
+
+This method arrives at the optimal solution within $n$ iterations,
+with $n$ being the dimensionality of our problem space,
+which here is the number of weights.
+
+
+\newpage
+\section{Evaluation}
+
+\begin{list}{}{}
+	\item Gradient Descent $\Rightarrow$ tuedeli due
+	\item Line Search $\Rightarrow$ toeroeeeee
+	\item Conjugate Gradient $\Rightarrow$ goody goodgood
+\end{list}
+
+
+or more formally:
+
+Conjugate Gradient$ >$ Line Search $>$ Gradient Descent
 
 
 \end{document}
