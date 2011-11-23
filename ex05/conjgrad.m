@@ -79,7 +79,7 @@ function learn_gradientDescent()
 	global w1;
 	global e;
 
-	iterations = 10;
+	iterations = 6;
 	rate = 0.1;
 	for i = 1:iterations
 		g = gradient();
@@ -97,7 +97,7 @@ function learn_lineSearch()
 	global w1;
 	global e;
 
-	iterations = 15;
+	iterations = 6;
 	for i = 1:iterations
 		g = gradient();
 		alpha = - (g' * g) / (g' * H() * g);
@@ -119,7 +119,7 @@ function learn_conjugateGradient()
 	gold = gradient();
 	w = -gold;
 	d = -gold;
-	iterations = 2;
+	iterations = 6;
 	for i = 1:iterations
 		alpha = -(d' * gold) / (d' * H() * d);
 		w = w + alpha * d;
