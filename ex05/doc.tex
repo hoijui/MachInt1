@@ -1,0 +1,63 @@
+\documentclass[a4paper,headings=small]{scrartcl}
+\KOMAoptions{DIV=12}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+% define style of numbering
+\numberwithin{equation}{section} % use separate numbering per section
+\numberwithin{figure}{section}   % use separate numbering per section
+
+\title{Machine Intelligence I - WS2011/2012\\Excercise 5}
+\author{Rolf Schroeder (340126), Robin Vobruba (343773)}
+\date{23. November 2011}
+
+\pdfinfo{%
+  /Title    (TU Berlin - Machine Intelligence I - WS2011/2012 - Excercise 5)
+  /Author   (Rolf Schroeder (340126), Robin Vobruba (343773))
+  /Creator  ()
+  /Producer ()
+  /Subject  ()
+  /Keywords ()
+}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+\section{Performance}
+
+
+
+\subsection{Gradient Descent}
+
+Gradient (or steepest) descent with constant learning rate.
+
+\includegraphics[width=0.33\linewidth]{conjugateGradient_approximation.png}%
+\includegraphics[width=0.33\linewidth]{conjugateGradient_errorsEvolution.png}%
+\includegraphics[width=0.33\linewidth]{conjugateGradient_weightsEvolution.png}
+
+
+\subsection{Line Search}
+
+Steepest descent combined with a line search method to determine the learning rate.
+
+\includegraphics[width=0.33\linewidth]{gradientDescent_approximation.png}%
+\includegraphics[width=0.33\linewidth]{gradientDescent_errorsEvolution.png}%
+\includegraphics[width=0.33\linewidth]{gradientDescent_weightsEvolution.png}
+
+
+\subsection{Conjugate Gradient}
+
+Conjugate gradient method.
+
+\includegraphics[width=0.33\linewidth]{lineSearch_approximation.png}%
+\includegraphics[width=0.33\linewidth]{lineSearch_errorsEvolution.png}%
+\includegraphics[width=0.33\linewidth]{lineSearch_weightsEvolution.png}
+
+
+\end{document}
