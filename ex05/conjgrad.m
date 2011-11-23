@@ -24,6 +24,8 @@ global input = [-1.0, 0.3, 2.0]
 global X = [1.0, 1.0, 1.0; input]
 
 
+global ErrorStop = 0.1;
+
 # the training error
 function _Error = Error()
 	global X
@@ -112,6 +114,7 @@ function learn_conjugateGradient()
 	global w0;
 	global w1;
 	global e;
+	global ErrorStop;
 
 	gold = gradient();
 	w = -gold;
@@ -131,6 +134,9 @@ function learn_conjugateGradient()
 		w0(end+1) = w(1);
 		w1(end+1) = w(2);
 		e(end+1)  = Error();
+		if (e(end) < ErrorStop)
+			break;
+		endif
 	endfor
 endfunction
 
