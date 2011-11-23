@@ -159,11 +159,14 @@ function plotLearningResults(methodName)
 	ylabel("w1");
 	w0Min = min(w0)
 	w0Max = max(w0)
+	w0Scale = w0Max - w0Min
 	w1Min = min(w1)
 	w1Max = max(w1)
-	wScaleMax = ceil(max([w0Max, w1Max]))
-	wScaleMin = floor(min([w0Min, w1Min]))
-	axis([wScaleMin wScaleMax wScaleMin wScaleMax])
+	w1Scale = w1Max - w1Min
+	wScaleMax = max([w0Scale, w1Scale])
+	w0Max = w0Min + wScaleMax
+	w1Max = w1Min + wScaleMax
+	axis([w0Min w0Max w1Min w1Max])
 	print(strcat(methodName, "_weightsEvolution.png"), "-dpng")
 
 	# Plot the error evolution over the iteration steps
