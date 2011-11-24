@@ -2,5 +2,6 @@
 /README.html
 /ex05/*.png
 
-# Latex temp files dir
+# Latex temp files
 *.t2d
+*.tex.backup
