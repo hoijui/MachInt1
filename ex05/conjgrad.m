@@ -24,6 +24,12 @@ global input = [-1.0, 0.3, 2.0]
 global X = [1.0, 1.0, 1.0; input]
 
 
+# Whether to make all weight space diagramms use the same dimensions
+global gleichSchaltung = 1;
+#global gSScale = [-1.0 2.0 -1.0 2.0];
+global gSScale = [-0.3 0.7 -0.3 0.7];
+
+
 global ErrorStop = 0.1;
 
 # the training error
@@ -160,16 +166,22 @@ function plotLearningResults(methodName)
 	title(strcat(methodName, " - weight space - evolution"))
 	xlabel("w0");
 	ylabel("w1");
-	w0Min = min(w0);
-	w0Max = max(w0);
-	w0Scale = w0Max - w0Min;
-	w1Min = min(w1);
-	w1Max = max(w1);
-	w1Scale = w1Max - w1Min;
-	wScaleMax = max([w0Scale, w1Scale]);
-	w0Max = w0Min + wScaleMax;
-	w1Max = w1Min + wScaleMax;
-	axis([w0Min w0Max w1Min w1Max])
+	global gleichSchaltung;
+	if (gleichSchaltung)
+		global gSScale;
+		axis(gSScale)
+	else
+		w0Min = min(w0);
+		w0Max = max(w0);
+		w0Scale = w0Max - w0Min;
+		w1Min = min(w1);
+		w1Max = max(w1);
+		w1Scale = w1Max - w1Min;
+		wScaleMax = max([w0Scale, w1Scale]);
+		w0Max = w0Min + wScaleMax;
+		w1Max = w1Min + wScaleMax;
+		axis([w0Min w0Max w1Min w1Max])
+	endif
 	print(strcat(methodName, "_weightsEvolution.png"), "-dpng")
 
 	# Plot the error evolution over the iteration steps
@@ -185,12 +197,20 @@ function plotGradients(doPlot)
 	global gY;
 	global gU;
 	global gV;
+	global gleichSchaltung;
 
 	wReach = 1.0;
 	w0Min = -wReach;
 	w0Max =  wReach;
 	w1Min = -wReach;
 	w1Max =  wReach;
+	if (gleichSchaltung)
+		global gSScale;
+		w0Min = gSScale(1);
+		w0Max = gSScale(2);
+		w1Min = gSScale(3);
+		w1Max = gSScale(4);
+	endif
 
 	steps = 6;
 
@@ -218,6 +238,10 @@ function plotGradients(doPlot)
 	if (doPlot)
 		# Plot the gradient field
 		quiver(gX, gY, gU, gV)
+		if (gleichSchaltung)
+			global gSScale;
+			axis(gSScale)
+		endif
 		title("gradient space")
 		print("gradientSpace.png", "-dpng")
 	endif
