@@ -157,12 +157,12 @@ function plotLearningResults(methodName)
 	output = t;
 	approxOutput = w' * X;
 	title(strcat(methodName, " - target space - samples and approximation"))
-	plot(input, [output; approxOutput])
+	plot(input, [output; approxOutput], ["4"; "3"])
 	legend(["samples"; "approximation"]);
 	print(strcat(methodName, "_approximation.png"), "-dpng")
 
 	# Plot the weights evolution over the iteration steps
-	plot(w0, w1)
+	plot(w0, w1, "2")
 	title(strcat(methodName, " - weight space - evolution"))
 	xlabel("w0");
 	ylabel("w1");
@@ -185,7 +185,7 @@ function plotLearningResults(methodName)
 	print(strcat(methodName, "_weightsEvolution.png"), "-dpng")
 
 	# Plot the error evolution over the iteration steps
-	plot(e)
+	plot(e, "1")
 	title(strcat(methodName, " - error - evolution"))
 	print(strcat(methodName, "_errorsEvolution.png"), "-dpng")
 endfunction
