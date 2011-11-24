@@ -179,6 +179,57 @@ function plotLearningResults(methodName)
 endfunction
 
 
+function plotGradients(doPlot)
+	global w;
+	global gX;
+	global gY;
+	global gU;
+	global gV;
+
+	wReach = 1.0;
+	w0Min = -wReach;
+	w0Max =  wReach;
+	w1Min = -wReach;
+	w1Max =  wReach;
+
+	steps = 6;
+
+	w0Step = (w0Max - w0Min) / steps;
+	w1Step = (w1Max - w1Min) / steps;
+
+	gX = [];
+	gY = [];
+	gU = [];
+	gV = [];
+
+	iterations = 6;
+	for iW0 = 0:steps
+		w(1) = w0Min + iW0*w0Step;
+		for iW1 = 0:steps
+			w(2) = w1Min + iW1*w1Step;
+			grad = gradient();
+			gX(end+1) = w(1);
+			gY(end+1) = w(2);
+			gU(end+1) = grad(1);
+			gV(end+1) = grad(2);
+		endfor
+	endfor
+
+	if (doPlot)
+		# Plot the gradient field
+		quiver(gX, gY, gU, gV)
+		title("gradient space")
+		print("gradientSpace.png", "-dpng")
+	endif
+endfunction
+
+
+global gX;
+global gY;
+global gU;
+global gV;
+plotGradients(1)
+
 learn_init()
 learn_gradientDescent()
 plotLearningResults("gradientDescent")
