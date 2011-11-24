@@ -46,8 +46,8 @@ Gradient (or steepest) descent with constant learning rate.
 \includegraphics[width=0.5\linewidth]{gradientDescent_approximation.png}
 \includegraphics[width=0.5\linewidth]{gradientDescent_errorsEvolution.png}
 
-Usually, this method takes four iterations for the given problem,
-to reach its optimum (the error does not change anymore).
+The number of steps this method takes to converge for the given problem,
+depending on the initial weight values, ranges from two to four.
 
 
 \newpage
@@ -60,7 +60,7 @@ Steepest descent combined with a line search method to determine the learning ra
 \includegraphics[width=0.5\linewidth]{lineSearch_approximation.png}
 \includegraphics[width=0.5\linewidth]{lineSearch_errorsEvolution.png}
 
-Usually, this method takes three iterations for the given problem,
+Usually, this method takes two or three iterations for the given problem,
 to reach its optimum (the error does not change anymore).
 
 
@@ -77,6 +77,10 @@ Conjugate gradient method.
 This method arrives at the optimal solution within $n$ iterations,
 with $n$ being the dimensionality of our problem space,
 which here is the number of weights: two.
+Other then the two methods above, which both slowly approach the optimal
+weight space position, this one will usually enlarge the error by a big deal
+in the first step.
+It is the most robust of the three algorithms.
 
 
 \newpage
