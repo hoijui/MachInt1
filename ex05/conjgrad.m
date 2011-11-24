@@ -186,6 +186,7 @@ function plotLearningResults(methodName)
 
 	# Plot the error evolution over the iteration steps
 	plot(e, "1")
+	xlim([1, 6])
 	title(strcat(methodName, " - error - evolution"))
 	print(strcat(methodName, "_errorsEvolution.png"), "-dpng")
 endfunction
@@ -212,7 +213,7 @@ function plotGradients(doPlot)
 		w1Max = gSScale(4);
 	endif
 
-	steps = 6;
+	steps = 10;
 
 	w0Step = (w0Max - w0Min) / steps;
 	w1Step = (w1Max - w1Min) / steps;
