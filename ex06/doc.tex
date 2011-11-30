@@ -1,0 +1,185 @@
+\documentclass[a4paper,headings=small]{scrartcl}
+\KOMAoptions{DIV=12}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multirow}
+
+% define style of numbering
+\numberwithin{equation}{section} % use separate numbering per section
+\numberwithin{figure}{section}   % use separate numbering per section
+
+% instead of using indents to denote a new paragraph, we add space before it
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{10pt plus 1pt minus 1pt}
+
+\title{Machine Intelligence I - WS2011/2012\\Excercise 6}
+\author{Robin Vobruba (343773)}
+\date{\today}
+
+\pdfinfo{%
+  /Title    (Machine Intelligence I - WS2011/2012 - Excercise 6)
+  /Author   (Robin Vobruba (343773))
+  /Creator  ()
+  /Producer ()
+  /Subject  ()
+  /Keywords ()
+}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\section{Excercise 6.1}
+
+given:
+
+\begin{tabular}{lc}
+$\{x_1, ... , x_n\}$ & (a set of iid (\b{i}ndependent and \b{i}dentically \b{d}istributed) random variables) \\
+
+$E_n[x] = \frac{1}{n} \sum\limits_{t=1}^{n}{x_t}$ & (empirical mean) \\
+
+$V_n[x] = \sigma^2 = \frac{1}{n} \sum\limits_{t=1}^{n}{(E_n[x] - x_t)^2}$ & (empirical variance) \\
+
+$\langle x_i \rangle = \mu$ \\
+
+$(x_i − \mu)^2 = \sigma^2$
+\end{tabular}
+
+
+\subsection{Excercise 6.1.a}
+
+to be shown:
+
+$\langle E_n[x] \rangle = \mu$
+
+path to take:
+
+\begin{tabular}{lc}
+$E_n[x] = \frac{1}{n} \sum\limits_{t=1}^{n}{x_t}$ \\
+
+$\langle E_n[x] \rangle = \langle \frac{1}{n} \sum\limits_{t=1}^{n}{x_t} \rangle$ \\
+
+$\langle E_n[x] \rangle = \frac{1}{n} \sum\limits_{t=1}^{n}{\langle x_t \rangle}$ & $|$ because of $x_i$ being \emph{iid} ... \\
+
+$\langle E_n[x] \rangle = \frac{1}{n} \sum\limits_{t=1}^{n}{\mu}$ \\
+
+$\langle E_n[x] \rangle = \mu$
+\end{tabular}
+
+
+\subsection{Excercise 6.1.b}
+sudo apt-get remove mozilla-thunderbird
+to be shown:
+
+$\langle (E_n[x] - \mu)^2 \rangle = \frac{\sigma^2}{n}$
+
+path to take:
+
+\begin{tabular}{lc}
+$(x_i − \mu)^2 = \sigma^2$ & $| \div n$ \\
+
+$\langle (x_i − \mu)^2 \rangle = \langle \sigma^2 \rangle$ \\
+
+$\langle (x_i − \mu)^2 \rangle = \sigma^2$ \\
+
+$\frac{(x_i − \mu)^2}{n} = \frac{\sigma^2}{n}$ \\
+
+
+\end{tabular}
+
+sudo apt-get remove mozilla-thunderbird
+\subsection{Excercise 6.1.c}
+
+to be shown:
+
+$\langle V_n[x] \rangle \neq \sigma^2$
+
+path to take:
+
+\begin{align}
+\langle V_n[x] \rangle
+	&= \langle \frac{1}{n}\sum_{t=1}^n (x_i-E_n[x])^2 \rangle
+		= \langle \frac{1}{n}\sum_{t=1}^n \big((x_i-\mu)-(E_n[x]-\mu)\big)^2 \rangle \\
+	&= \langle \frac{1}{n}\sum_{t=1}^n (x_i-\mu)^2 -
+								2(E_n[x]-\mu)\frac{1}{n}\sum_{t=1}^n (x_i-\mu) +
+								(E_n[x]-\mu)^2 \rangle \\
+	&= \langle \frac{1}{n}\sum_{t=1}^n (x_i-\mu)^2 - (E_n[x]-\mu)^2 \rangle
+		= \sigma^2 - \langle (E_n[x]-\mu)^2 \rangle < \sigma^2.
+\end{align}
+
+
+\section{Excercise 6.2}
+
+\subsection{Excercise 6.2.a}
+
+\subsubsection{square root semi-norm regularization}
+Creates underfitting?
+If so, it could be used to model/look at a problem in an oversimplified representation,
+in case the proper one is too complex.
+
+\subsubsection{L1}
+This term will help to keep the practical dimensionality of the net low.
+It simulates a network with as few hidden neurons as required for the network.
+It extremizes weights.
+
+\subsubsection{L2}
+Will penalize high valued weights.
+This makes sure we do not get stuck in local minimas very easily.
+This is the standard for reducing overfitting.
+
+\subsubsection{L infinity}
+Allows us to stay close to real solutions (for example, a biological network),
+which do have physical limitations for the maximum weights,
+or which have to be optimized, energy wise (metabolicly);
+huge weights are translated into huge potentials in axons/dendrites, for example.
+
+\subsection{Excercise 6.2.b}
+
+\subsubsection{L1}
+For a fixed network architecture with a higher dimensionality then useful for solving our problem,
+for example 20 hidden neurons to solve a problem that would be better done with 3 hidden neurons,
+like XOR, and/or where we have too few samples.
+
+\subsubsection{L infinity}
+see 6.2.a
+
+
+\subsection{Excercise 6.2.c}
+
+\subsubsection{symmetries}
+
+$R(w) = \frac{1}{2p} \sum_{t=1}^n (y(x) - y(-x))^2$
+
+sinus
+
+
+\subsubsection{Invariance under shift t}
+
+$R(w) = \frac{1}{2p} \sum_{t=1}^n (y(x) - y(-x))^2$
+
+cosinus
+
+
+\subsection{Excercise 6.2.d}
+
+Explain the concept of nested n-fold cross-validation and describe the difference to normal n-
+fold cross-validation.
+
+??? TODO ???
+
+
+\section{Excercise 6.3}
+
+$w = (XX^T)^{-1} * Xt^T$
+
+\subsection{Excercise 6.3.a}
+
+
+
+\end{document}
