@@ -72,6 +72,10 @@ endfunction
 
 # 9.3 RBF Network
 
+function _phi = phi(x, t, sigma)
+	_phi = exp(-1 * (x - t)^2 / 2 * sigma^2);
+endfunction
+
 # calculate the k centroids
 function _centroids = kmeans(k, DATA)
 	n = length(DATA);
