@@ -10,9 +10,15 @@ global DATA = [
 1 4 1
 ];
 
-
+# measure distance between two data points
 function _distance = distance(p1, p2)
 	_distance = norm(p1-p2);
+endfunction
+
+# convenience function to access a datapoint
+function _point = get_point(DATA, index)
+	n = length(DATA);
+	_point = [DATA(index); DATA(index + n)];
 endfunction
 
 # 9.1 k Nearest Neighbors
@@ -21,7 +27,7 @@ function _knn = knn(point, k)
 	distances = [];
 	n = length(DATA);
 	for i = 1:n # iterate over all points
-		p2 = [DATA(i); DATA(i+n)]; # get current point
+		p2 = get_point(DATA, i); # get current point
 		distances = [distances; distance(point, p2), DATA(i + 2 * n)]; # add distance and target of current point
 	endfor
 	distances = sortrows(distances); # sort rows (by first column -> sort by distance ascending)
@@ -36,4 +42,4 @@ function _knn = knn(point, k)
 	
 endfunction
 
-knn([-5;-5], 3)
+knn([5;5], 3)
