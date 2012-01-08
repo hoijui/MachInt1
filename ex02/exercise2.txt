@@ -1,0 +1,85 @@
+Machine Intelligence 1 - Exercise 2
+Robin Vobruba
+
+
+2.1
+a)
+	supervised:
+		with a teacher, training data is given, predict output on yet unknonw input;
+		to be used on classification & regression problems
+	unsupervised:
+		self-organizing nature, clustering/categorization
+		two main use-cases:
+		- categorization
+		- feature detection
+	reinforcement learning:
+		each action taken is rated, not based on mathematical models
+b)
+• To teach a dog to catch a ball
+	(reinforcement learning)
+	observation: fliegender ball
+	label: - (was the dog able to catch the ball, or not)
+	reward: food or caressing the dog receives whenever he was able to catch the ball
+• To read hand written addresses from letters
+	(supervised)
+	observation: one (unknown) hand written letter
+	label: a letter from the alphabet (assigned to a hand written one)
+	reward: -
+• To identify groups of users with the same taste of music
+	(unsupervised)
+	observation: music the people listen to
+	label: - (category of music)
+	reward: -
+
+2.2
+a) For what reason do connectionist neurons have a transfer function?
+	The transfer function is one of the components that make up
+	the computational nature of such a neuron(its synapse).
+	It allows to map input to output in a non-linear manner.
+b) In which situation would a tanh() transfer function be more appropriate than a sign()?
+	When we need non-linearity, as in a Multi Layer Perceptron.
+	With the sign() function, we would give away the computational capacity
+	of the multi layer/multi neuron aspect of the perceptron, compared
+	to a single neuron.
+	To determine the type of hte output (continuous or "digital")
+
+2.3 What is the function of the bias in a connectionist neuron? Give an example in which a classification
+with a sign() transfer function would not work without a bias (but would with one).
+	(The bias is the threshold added to the sum of inputs, before the transfer function.)
+	It alows to handle the threashold in an algorithmicaly simpler way.
+	It provides a point of reference.
+	Example: find out if a vehicule is a car, with the input being number of wheels.
+		The threashold has to be -3.5.
+
+2.4 What are point and edge filters and what are they used for?
+	They may be used to detect single points/pixels or edges in
+	(a certain part) of an image (pixel canvas). It does so by analyzing
+	the brightness (or changes therein).
+	Given a specific location in an image, they analyze a fixed ammount of
+	pixels, and return the likelyhood of this location containing a point
+	or edge respectively.
+
+2.5 What is the difference between a connectionist neuron with a logistic transfer function and a
+stochastic neuron?
+	???stochastic neurons (two states)
+	
+2.6
+a)
+Give the easiest example you can think of, in which a multilayer perceptron (MLP) can distinguish
+between two classes, but a single connectionist neuron can not.
+	XOR
+	in1	in2	sum	out
+	0	0	0	0
+	0	1	1	1
+	1	0	1	1
+	1	1	2	0
+	There is no set of weights and (standard) transfer function that could
+	map
+b)
+What are feedforward and recurrent MLP and why is training a recurrent MLP much more
+complicated than a feedforward MLP?
+	For a feedforward MLP, it is true for every synapse going from layer
+	i to layer j, that i < j. For a recurrent MLP, this is not true.
+	Training a FF MLP is therefore much easier, because we can just
+	propagate the error back through the net, layer by layer, adjusting
+	the weights.

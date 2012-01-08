@@ -1,0 +1,53 @@
+Machine Intelligence 1 - Exercise 3
+Robin Vobruba
+
+
+3.1 What effect will the choice of error measure have on the predictor?
+	The choice has to be made according to the caracteristics underlying
+	the actual real world problem we are trying to solve with the (ML)P.
+	If we do this well, then a well trained P may find optimal predictions,
+	with the same meaning of "optimal" as we would define it.
+	linear: classification, automatic public-transports path extraction
+	quadratic: default, general problems, where none of the others fits??
+	maximum penalty: slow, gradual learning, gradual rating within certain bounds:
+		"rate this picture from 1 to 10; you may use float"
+		Allows us to "hoover over the target landscape",
+		and thus may prevent getting stuck in local minimas.
+	tolerate small errors: appointment-scheduling, automatic public-transports path extraction
+
+3.2
+a)
+	{see paper}
+b)
+	diff(1 / (1 + e^(-h))) = (1 / (1 + e^(-h))) * (1 - (1 / (1 + e^(-h))))
+	{see paper}
+c)
+	???
+	
+3.3
+a) What is validation and why is it needed?
+   What is the differences between over-fitting and under-fitting?
+   Name and discuss the techniques presented in the lecture to perform validation.
+	Validation is the name for the method of rating the prediction quality of a P.
+	The result of validation indicates, how well the network may predict
+	the optimal output for yet unseen input.
+	If the training process leaves the P as over-fitted (model too complex), it means that the training set is (too) well fit,
+	while the testing-/validation-set is predicted badly (and thus, likely, also to-be-analyzed, yet unseen input).
+	If the P is underfit (model too simple), the training set is fit badly (and thus, likely, also the testing-set and yet unseen input).
+	Test Set Method: - not all available data can be used for training
+	N-Fold Cross-Validation: T samples are divided into N sub-sets.
+		N trainig runs are performed, using N-1 of the sub-sample-sets as trainig data, and the remaining sub-set as testing-set.
+		the total E_G is usually calculated as the average over the N E_G' we get from the N training&validation runs.
+b) If a predictor over-fits, which approaches could be used to correct that?
+   Be creative! Not all possibilities are discussed in the lecture!
+	* Random bias could be introduced (changing the weights of the network)
+	* The network architecture could be changed (more or less hidden layers or neurons in each layer)
+	* The error messure could be changed
+	* The training & testing sets could be exchanged or (better) mixed
+	* Regularization (punish complex approximations)
+	* Get more trainig data
+
+
+
+
+
