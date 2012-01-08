@@ -152,6 +152,10 @@ function plotLearningResults(methodName)
 	global w0;
 	global w1;
 	global e;
+	global gX;
+	global gY;
+	global gU;
+	global gV;
 
 	# Plot the samples vs the approximation
 	output = t;
@@ -162,6 +166,11 @@ function plotLearningResults(methodName)
 	print(strcat(methodName, "_approximation.png"), "-dpng")
 
 	# Plot the weights evolution over the iteration steps
+	doPlotGradients = 0;
+	if (doPlotGradients)
+		# Plot the gradient field
+		quiver(gX, gY, gU, gV)
+	endif
 	plot(w0, w1, "2")
 	title(strcat(methodName, " - weight space - evolution"))
 	xlabel("w0");
