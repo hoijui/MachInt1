@@ -1,0 +1,167 @@
+\documentclass[a4paper,headings=small]{scrartcl}
+\KOMAoptions{DIV=12}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multirow}
+
+% instead of using indents to denote a new paragraph, we add space before it
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{10pt plus 1pt minus 1pt}
+
+\title{Machine Intelligence I - WS2011/2012\\Excercise 7}
+\author{Robin Vobruba (343773)}
+\date{\today}
+
+\pdfinfo{%
+  /Title    (Machine Intelligence I - WS2011/2012 - Excercise 7)
+  /Author   (Robin Vobruba (343773))
+  /Creator  ()
+  /Producer ()
+  /Subject  ()
+  /Keywords ()
+}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\section{Excercise 7.1}
+
+\subsection{7.1.a}
+Describe and discuss the multi-class predictor presented in the lecture. How is validation per-
+formed in this case? How can you predict the class of a previously unseen sample?
+
+\subsubsection{Answer}
+???
+
+In machine learning, multiclass or multinomial classification is the problem of
+classifying instances into more than two classes.
+
+Description of predictor presented in the lecture:
+Network will be trained as usual
+Output will be normalized with the softmax function 
+Kullbach-Leibler-Divergence DKL is used to relate outputs to classes                                                                                            (dissimilary measure between probability distributions and densities, always non negative)
+Mathematical expectation of the relation is tested                                                                                       (via the empirical average over the training set)
+Optimization via gradient descent method
+How is the validation performed?
+Possibility 1: test-set method (using cross-entropy measure) – ET similar to EG
+Possibility 2: n-fold cross-validation (using cross-entropy measure) – estimation EG
+
+Discussion:
+Output can be normalized with additional possibilities
+Prediction is then performed by predicting using each binary classifier, and choosing the prediction with the highest confidence score (e.g., the highest probability of a classifier such as Naive Bayes).
+
+
+
+\subsection{7.1.b}
+Derive the gradient of the cross-entropy $E_T$ w.r.t. the weight vector w.
+
+\subsubsection{Answer}
+???
+
+\subsection{7.1.c}
+Discuss how to perform multi-class classification beyond the scope presented in the lecture.
+Look up and describe at last two of the following three terms:
+• One-versus-the-rest classification.
+• Quadratic discriminant analysis.
+• Winner-take-all network.
+
+\subsubsection{Answer}
+\emph{One-versus-the-rest} == \emph{One-versus-the-all} == \emph{Winner-take-all network}
+
+This is used in multi-class SVMs, for example.
+
+A classification problem with many (more then two) classes is converted
+into a problem of comparing applicability of two classes for a data-point at a time.
+This is a general technique, which acts as a kind of black-box applier,
+while the black box might be any binary classifier.
+
+\emph{Quadratic discriminant analysis}
+
+This is similar to the approach we discussed in class,
+but it does not have the requirement that the variances
+of the class-probabilities are equal, and is thus more general.
+The name quadratic, comes from the fact that it creates quadratic boundaries,
+instead of linear ones, between classes.
+
+
+\section{Excercise 7.2 Radial Basis Function Networks}
+\subsection{7.2.a RBF architecture}
+Describe and discuss the general architecture of an RBF-network.
+Would more than two layers improve the performance?
+
+\subsubsection{Answer}
+Each neuron in the hidden layer represents one class.
+Classes are defined through probabilities around class centers,
+most commonly, using a gaussian distribution.
+For detecting more complexly distributed classes,
+one would simply use more complex distribution function.
+Using more hidden layers makes no sense, neither perceptionaly,
+nor computationally, as it would interpolate distributions,
+while we would still need one neuron per class in the last layer.
+
+\subsection{7.2.b Two-step learning procedure}
+Describe and discuss the two-step learning procedure for RBF-networks.
+Derive the analytical solution of the output-weights $w$ for the cost function $E_T$.
+
+\subsubsection{Answer}
+The first step is unsupervised learning, where we first assing output labels
+to the input data through a clustering mechanism.
+In hte second step, we perform supervised learning with the now labeled data.
+
+\empth{Initialization}
+
+A number of classes is chosen (might be done through validation, or arbitrarily).
+The centroids are placed in the input space, in similar distances,
+equally distrubuted around the center of the input data.
+
+\empth{Loop}
+
+A random data-point is chosen, and the closest centroid is detemined.
+This closest centroid is pulled towards the chosen data-point.
+
+end of step 1.
+
+in step 2, we determine the output weights.
+
+
+\empth{derived $E_T$}
+
+see paper
+
+
+\subsection{7.2.c}
+
+see paper
+
+
+\subsection{7.2.d}
+
+Regression:
+
+RBF pro:
+* less weights, due to no bias, and no weights for the input layer -> less stuff to learn
+* less weights to adjust per input, only the local ones due to one weight depending on less inputs, it converges faster
+* there are no local minima! (only a single global one)
+
+MLP pro:
+* there might be certain multi-layer strcutures taht allow to use significantly less
+neurons then a similar single-hidden-layer structure, and therefore,
+the total number of weights might be lower then wiht an RBF.
+
+Classification:
+
+??? same?
+
+
+\subsubsection{Answer}
+
+
+
+\end{document}
