@@ -1,35 +1,5 @@
 #! /usr/bin/octave -qf
 
-
-#global DATA = [
-#-1 -1 -1
-#2 2 1
-#-3 -3 -1
-#1 2 1
-#1 3 1
-#1 4 1
-#];
-global DATA = [
-1 1
-1 3
-2 2
-3 1
-3 3
-#####
-1 -1
-1 -2
-1.5 -1.5
-2 -1
-2 -2
-######
--3 1
--3 2
--2.5 1.5
--2 1
--2 2
-]
-
-
 global mu = [0, 1; 1, 0; 0, 0; 1, 1];
 global sigma = sqrt(0.1);
 global nSampPerClass = 40;
@@ -85,13 +55,10 @@ endfunction
 
 mySamples = generateSamples();
 
-hold on
-plot(mySamples(1,:), mySamples(2,:), 'r*');
-plot(mySamples(3,:), mySamples(4,:), 'b*');
-hold off
-title("Verteilung")
-legend(["C1"; "C2"]);
-print("initial.png", "-dpng")
+
+DATA = [
+	mySamples(1,:)' mySamples(2,:)' 1 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1);
+	mySamples(3,:)' mySamples(4,:)' 2 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1)];
 
 
 # measure distance between two data points
@@ -111,19 +78,16 @@ function _knn = knn(point, k)
 	distances = [];
 	n = length(DATA);
 	for i = 1:n # iterate over all points
-		p2 = get_point(DATA, i); # get current point
-		distances = [distances; distance(point, p2), DATA(i + 2 * n)]; # add distance and target of current point
+		x = [DATA(i, 1), DATA(i, 2)]; # data point
+		t = DATA(i, 3); # label
+		# add distance and target of current point
+		distances = [distances; distance(point, x), t];
 	endfor
 	distances = sortrows(distances); # sort rows (by first column -> sort by distance ascending)
 	distances(k+1:end,:)=[]; # delete everything except the first k rows
 	s = sum(distances, 1); # sum along the cols
-	s(:,1) = []; # keep only the +1/-1 sum
-	if (s < 0) # evalute the voting
-		_knn = -1;
-	else
-		_knn = 1;
-	endif
-	
+	s(:,1) = []; # keep only the label sum
+	_knn = round(s / k);
 endfunction
 
 
@@ -173,4 +137,52 @@ function _centroids = kmeans(k, DATA)
 endfunction
 
 kmeans(3, DATA);
+
+
+
+k = 5;
+stepSize = 0.03;
+global dataTest = [];
+
+steps = -1 : stepSize : 2;
+
+tdi = 1;
+for x = steps
+	for y = steps
+		dataTest(tdi, 1) = x;
+		dataTest(tdi, 2) = y;
+		dataTest(tdi, 3) = knn([x, y], k);
+		%dataTest(end+1) = [x, y; knn([x, y], k)];
+		tdi = tdi + 1;
+	endfor
+endfor
+
+
+testC1 = [];
+testC2 = [];
+for tdi = 1:length(dataTest)
+	if dataTest(tdi, 3) == 1
+		newInd = length(testC1) + 1;
+		testC1(newInd, 1) = dataTest(tdi, 1);
+		testC1(newInd, 2) = dataTest(tdi, 2);
+		testC1(newInd, 3) = dataTest(tdi, 3);
+	else
+		newInd = length(testC2) + 1;
+		testC2(newInd, 1) = dataTest(tdi, 1);
+		testC2(newInd, 2) = dataTest(tdi, 2);
+		testC2(newInd, 3) = dataTest(tdi, 3);
+	end
+endfor
+
+
+hold on
+plot(testC1'(1,:), testC1'(2,:), 'g*');
+plot(testC2'(1,:)', testC2'(2,:), 'm*');
+
+plot(mySamples(1,:), mySamples(2,:), 'r*');
+plot(mySamples(3,:), mySamples(4,:), 'b*');
+hold off
+title("Verteilung")
+legend(["C1"; "C2"]);
+print("initial.png", "-dpng")
 
