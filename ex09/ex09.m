@@ -145,24 +145,24 @@ function _centroids = kmeans(dataTrainingC, k, DATA)
 endfunction
 
 
-function plotClsDist(dataTrainingP, testC1, testC2)
+function plotClsDist(dataTrainingP, testC1, testC2, name)
 	global mySamples;
 
+	f = figure('Visible', 'off');
 	hold on
 	plot(testC1'(1,:), testC1'(2,:), 'g*');
 	plot(testC2'(1,:)', testC2'(2,:), 'm*');
 
 	plot(dataTrainingP(1,:), dataTrainingP(2,:), 'r*');
 	plot(dataTrainingP(3,:), dataTrainingP(4,:), 'b*');
-	hold off
-	title("Verteilung")
+	title("Verteilung");
 	legend(["C1"; "C2"]);
-	print("initial.png", "-dpng")
+	print(strcat("out_", name, ".png"), "-dpng");
+	hold off
 endfunction
 
 
-function _classifiedGrid = classifyGrid(dataTrainingC)
-	global k;
+function _classifiedGrid = classifyGrid(dataTrainingC, classifier)
 	global stepSize;
 
 	_classifiedGrid = [];
@@ -173,7 +173,7 @@ function _classifiedGrid = classifyGrid(dataTrainingC)
 			tdi = length(_classifiedGrid) + 1;
 			_classifiedGrid(tdi, 1) = x;
 			_classifiedGrid(tdi, 2) = y;
-			_classifiedGrid(tdi, 3) = knn(dataTrainingC, [x, y], k);
+			_classifiedGrid(tdi, 3) = feval(classifier, dataTrainingC, [x, y]);
 		endfor
 	endfor
 endfunction
@@ -192,6 +192,38 @@ function _testClassData = separateTestDataIntoClasses(classifiedGrid, wantedClas
 	endfor
 endfunction
 
+function _cls = classifierKnn(dataTrainingC, point)
+	global k;
+	_cls = knn(dataTrainingC, point, k);
+endfunction
+
+function _cls = classifierParzen(dataTrainingC, point)
+	global parzenSigma;
+	_cls = pn(dataTrainingC, point, parzenSigma);
+endfunction
+
+function _cls = plotClassifier(dataTrainingC, dataTrainingP, classifier, nameSuffix)
+	classifiedGrid = classifyGrid(dataTrainingC, classifier);
+	testClassData1 = separateTestDataIntoClasses(classifiedGrid, 1);
+	testClassData2 = separateTestDataIntoClasses(classifiedGrid, 2);
+
+	name = strcat(classifier, "_", nameSuffix);
+	plotClsDist(dataTrainingP, testClassData1, testClassData2, name);
+endfunction
+
+
+function plotKnn(dataTrainingC, dataTrainingP, myK)
+	global k;
+	k = myK;
+	plotClassifier(dataTrainingC, dataTrainingP, 'classifierKnn', strcat("k_", num2str(k)));
+endfunction
+
+function plotParzen(dataTrainingC, dataTrainingP, mySigma)
+	global parzenSigma;
+	parzenSigma = mySigma;
+	plotClassifier(dataTrainingC, dataTrainingP, 'classifierParzen', strcat("sigma_", num2str(parzenSigma)));
+endfunction
+
 
 
 dataTrainingP = generateSamples();
@@ -200,13 +232,16 @@ dataTrainingC = [
 	dataTrainingP(1,:)' dataTrainingP(2,:)' 1 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1);
 	dataTrainingP(3,:)' dataTrainingP(4,:)' 2 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1)];
 
-global k = 5;
 global stepSize = 0.3;
 
-classifiedGrid = classifyGrid(dataTrainingC);
-testClassData1 = separateTestDataIntoClasses(classifiedGrid, 1);
-testClassData2 = separateTestDataIntoClasses(classifiedGrid, 2);
 
-plotClsDist(dataTrainingP, testClassData1, testClassData2);
+
+plotKnn(dataTrainingC, dataTrainingP, 1);
+plotKnn(dataTrainingC, dataTrainingP, 5);
+plotKnn(dataTrainingC, dataTrainingP, 25);
+
+plotParzen(dataTrainingC, dataTrainingP, 0.01);
+plotParzen(dataTrainingC, dataTrainingP, 0.1);
+plotParzen(dataTrainingC, dataTrainingP, 0.5);
 
 
