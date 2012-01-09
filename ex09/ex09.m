@@ -9,6 +9,7 @@ function _samples = generateSamples()
 	global mu;
 	global sigma;
 	global nSampPerClass;
+
 	_samples = [];
 	samplesC1X = [];
 	samplesC1Y = [];
@@ -53,13 +54,6 @@ function _samples = generateSamples()
 	_samples = [samplesC1Y; samplesC1X; samplesC2Y; samplesC2X];
 endfunction
 
-mySamples = generateSamples();
-
-
-global DATA = [
-	mySamples(1,:)' mySamples(2,:)' 1 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1);
-	mySamples(3,:)' mySamples(4,:)' 2 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1)];
-
 
 # measure distance between two data points
 function _distance = distance(p1, p2)
@@ -72,14 +66,16 @@ function _point = get_point(DATA, index)
 	_point = [DATA(index); DATA(index + n)];
 endfunction
 
+
+
 # 9.1 k Nearest Neighbors
-function _knn = knn(point, k)
-	global DATA;
+
+function _knn = knn(dataTrainingC, point, k)
 	distances = [];
-	n = length(DATA);
-	for i = 1:n # iterate over all points
-		x = [DATA(i, 1), DATA(i, 2)]; # data point
-		t = DATA(i, 3); # label
+	n = length(dataTrainingC);
+	for i = 1:n # iterate over all training points
+		x = [dataTrainingC(i, 1), dataTrainingC(i, 2)]; # training data point
+		t = dataTrainingC(i, 3); # label
 		# add distance and target of current point
 		distances = [distances; distance(point, x), t];
 	endfor
@@ -92,9 +88,21 @@ endfunction
 
 
 # 9.2 Parzen Windows
-function _pn = pn(point)
 
-
+function _pn = pn(dataTrainingC, point, parzenSigma)
+	classesWeighted = [0, 0];
+	n = length(dataTrainingC);
+	for i = 1:n # iterate over all training points
+		x = [dataTrainingC(i, 1), dataTrainingC(i, 2)]; # training data point
+		t = dataTrainingC(i, 3); # label
+		# add distance and target of current point
+		classesWeighted(t) += 1 / sqrt(2*PI*parzenSigma^2) * exp(-distance(point, x)^2 / (2*parzenSigma^2));
+	endfor
+	if classesWeighted(1) > classesWeighted(2)
+		_knn = 1;
+	else
+		_knn = 2;
+	endif
 endfunction
 
 
@@ -106,19 +114,19 @@ function _phi = phi(x, t, sigma)
 endfunction
 
 # calculate the k centroids
-function _centroids = kmeans(k, DATA)
-	n = length(DATA);
+function _centroids = kmeans(dataTrainingC, k, DATA)
+	n = length(dataTrainingC);
 	# pick random data points as initial centroids
 	t = [];
 	for i = 1:k
 		index = unidrnd(n);
-		t = [t, get_point(DATA, index)];
+		t = [t, get_point(dataTrainingC, index)];
 	endfor
 	# update cenroids
 	for i = 1:(10 * n)
 		index = unidrnd(n);
 		# choose data point
-		x = get_point(DATA, index);
+		x = get_point(dataTrainingC, index);
 
 		# determine closest centroid
 		distances = [];
@@ -136,53 +144,69 @@ function _centroids = kmeans(k, DATA)
 	_centroids = t;
 endfunction
 
-kmeans(3, DATA);
+
+function plotClsDist(dataTrainingP, testC1, testC2)
+	global mySamples;
+
+	hold on
+	plot(testC1'(1,:), testC1'(2,:), 'g*');
+	plot(testC2'(1,:)', testC2'(2,:), 'm*');
+
+	plot(dataTrainingP(1,:), dataTrainingP(2,:), 'r*');
+	plot(dataTrainingP(3,:), dataTrainingP(4,:), 'b*');
+	hold off
+	title("Verteilung")
+	legend(["C1"; "C2"]);
+	print("initial.png", "-dpng")
+endfunction
 
 
+function _classifiedGrid = classifyGrid(dataTrainingC)
+	global k;
+	global stepSize;
 
-k = 5;
-stepSize = 0.03;
-global dataTest = [];
+	_classifiedGrid = [];
 
-steps = -1 : stepSize : 2;
-
-tdi = 1;
-for x = steps
-	for y = steps
-		dataTest(tdi, 1) = x;
-		dataTest(tdi, 2) = y;
-		dataTest(tdi, 3) = knn([x, y], k);
-		%dataTest(end+1) = [x, y; knn([x, y], k)];
-		tdi = tdi + 1;
+	steps = -1 : stepSize : 2;
+	for x = steps
+		for y = steps
+			tdi = length(_classifiedGrid) + 1;
+			_classifiedGrid(tdi, 1) = x;
+			_classifiedGrid(tdi, 2) = y;
+			_classifiedGrid(tdi, 3) = knn(dataTrainingC, [x, y], k);
+		endfor
 	endfor
-endfor
+endfunction
 
 
-testC1 = [];
-testC2 = [];
-for tdi = 1:length(dataTest)
-	if dataTest(tdi, 3) == 1
-		newInd = length(testC1) + 1;
-		testC1(newInd, 1) = dataTest(tdi, 1);
-		testC1(newInd, 2) = dataTest(tdi, 2);
-		testC1(newInd, 3) = dataTest(tdi, 3);
-	else
-		newInd = length(testC2) + 1;
-		testC2(newInd, 1) = dataTest(tdi, 1);
-		testC2(newInd, 2) = dataTest(tdi, 2);
-		testC2(newInd, 3) = dataTest(tdi, 3);
-	end
-endfor
+
+function _testClassData = separateTestDataIntoClasses(classifiedGrid, wantedClass)
+	_testClassData = [];
+	for tdi = 1:length(classifiedGrid)
+		if classifiedGrid(tdi, 3) == wantedClass
+			newInd = length(_testClassData) + 1;
+			_testClassData(newInd, 1) = classifiedGrid(tdi, 1);
+			_testClassData(newInd, 2) = classifiedGrid(tdi, 2);
+			_testClassData(newInd, 3) = classifiedGrid(tdi, 3);
+		end
+	endfor
+endfunction
 
 
-hold on
-plot(testC1'(1,:), testC1'(2,:), 'g*');
-plot(testC2'(1,:)', testC2'(2,:), 'm*');
 
-plot(mySamples(1,:), mySamples(2,:), 'r*');
-plot(mySamples(3,:), mySamples(4,:), 'b*');
-hold off
-title("Verteilung")
-legend(["C1"; "C2"]);
-print("initial.png", "-dpng")
+dataTrainingP = generateSamples();
+
+dataTrainingC = [
+	dataTrainingP(1,:)' dataTrainingP(2,:)' 1 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1);
+	dataTrainingP(3,:)' dataTrainingP(4,:)' 2 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1)];
+
+global k = 5;
+global stepSize = 0.3;
+
+classifiedGrid = classifyGrid(dataTrainingC);
+testClassData1 = separateTestDataIntoClasses(classifiedGrid, 1);
+testClassData2 = separateTestDataIntoClasses(classifiedGrid, 2);
+
+plotClsDist(dataTrainingP, testClassData1, testClassData2);
+
 
