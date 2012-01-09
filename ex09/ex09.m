@@ -4,6 +4,7 @@ global mu = [0, 1; 1, 0; 0, 0; 1, 1];
 global sigma = sqrt(0.1);
 global nSampPerClass = 40;
 
+
 # Generate samples
 function _samples = generateSamples()
 	global mu;
@@ -61,9 +62,8 @@ function _distance = distance(p1, p2)
 endfunction
 
 # convenience function to access a datapoint
-function _point = get_point(DATA, index)
-	n = length(DATA);
-	_point = [DATA(index); DATA(index + n)];
+function _point = getPoint(data, index)
+	_point = [data(index, 1), data(index, 2)];
 endfunction
 
 
@@ -74,7 +74,7 @@ function _knn = knn(dataTrainingC, point, k)
 	distances = [];
 	n = length(dataTrainingC);
 	for i = 1:n # iterate over all training points
-		x = [dataTrainingC(i, 1), dataTrainingC(i, 2)]; # training data point
+		x = getPoint(dataTrainingC, i); # training data point
 		t = dataTrainingC(i, 3); # label
 		# add distance and target of current point
 		distances = [distances; distance(point, x), t];
@@ -93,7 +93,7 @@ function _pn = pn(dataTrainingC, point, parzenSigma)
 	classesWeighted = [0, 0];
 	n = length(dataTrainingC);
 	for i = 1:n # iterate over all training points
-		x = [dataTrainingC(i, 1), dataTrainingC(i, 2)]; # training data point
+		x = getPoint(dataTrainingC, i); # training data point
 		t = dataTrainingC(i, 3); # label
 		# add distance and target of current point
 		classesWeighted(t) += 1 / sqrt(2*pi*parzenSigma^2) * exp(-distance(point, x)^2 / (2*parzenSigma^2));
