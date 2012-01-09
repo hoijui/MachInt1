@@ -109,37 +109,37 @@ endfunction
 
 # 9.3 RBF Network
 
-function _phi = phi(x, t, sigma)
-	_phi = exp(-1 * (x - t)^2 / 2 * sigma^2);
+function _phi = phi(x, rbfMu, rbfSigma)
+	_phi = exp(-1 * distance(x, rbfMu)^2 / 2 * rbfSigma^2);
 endfunction
 
 # calculate the k centroids
-function _centroids = kmeans(dataTrainingC, k, DATA)
+function _centroids = kmeans(dataTrainingC, k)
 	n = length(dataTrainingC);
 	# pick random data points as initial centroids
 	t = [];
 	for i = 1:k
 		index = unidrnd(n);
-		t = [t, get_point(dataTrainingC, index)];
+		t = [t; getPoint(dataTrainingC, index)];
 	endfor
 	# update cenroids
 	for i = 1:(10 * n)
 		index = unidrnd(n);
 		# choose data point
-		x = get_point(dataTrainingC, index);
+		x = getPoint(dataTrainingC, index);
 
 		# determine closest centroid
 		distances = [];
 		for j = 1:length(t)
-			distances = [distances; distance(x, t(:,j)), j];
+			distances = [distances; distance(x, t(j,:)), j];
 		endfor
 		distances = sortrows(distances);
 		jnearest = distances(1,2);
-		nearest = t(:,jnearest);
+		nearest = t(jnearest,:);
 
 		# update centroid
 		nearest = nearest + (1 / n) * (x - nearest);
-		t(:,jnearest) = nearest;
+		t(jnearest,:) = nearest;
 	endfor
 	_centroids = t;
 endfunction
@@ -173,7 +173,9 @@ function _classifiedGrid = classifyGrid(dataTrainingC, classifier)
 			tdi = length(_classifiedGrid) + 1;
 			_classifiedGrid(tdi, 1) = x;
 			_classifiedGrid(tdi, 2) = y;
-			_classifiedGrid(tdi, 3) = feval(classifier, dataTrainingC, [x, y]);
+			isInit = (x == -1) && (y == -1);
+isInit
+			_classifiedGrid(tdi, 3) = feval(classifier, dataTrainingC, [x, y], isInit);
 		endfor
 	endfor
 endfunction
@@ -192,14 +194,47 @@ function _testClassData = separateTestDataIntoClasses(classifiedGrid, wantedClas
 	endfor
 endfunction
 
-function _cls = classifierKnn(dataTrainingC, point)
+function _cls = classifierKnn(dataTrainingC, point, isInit)
 	global k;
 	_cls = knn(dataTrainingC, point, k);
 endfunction
 
-function _cls = classifierParzen(dataTrainingC, point)
+function _cls = classifierParzen(dataTrainingC, point, isInit)
 	global parzenSigma;
 	_cls = pn(dataTrainingC, point, parzenSigma);
+endfunction
+
+function _cls = classifierRbf(dataTrainingC, point, isInit)
+	global rbfK;
+	global rbfSigma;
+	global rbfMus;
+	global rbfX;
+	global rbfW;
+	if isInit
+		rbfMus = kmeans(dataTrainingC, rbfK);
+		rbfX = dataTrainingC;
+		rbfX(:,3:end)=[]; # delete the labels
+		phiMatrix = [];
+		for j = 1:length(rbfMus)
+			for alpha = 1:length(rbfX)
+				if alpha == 1 && j != 1
+					phiMatrix = [phiMatrix; phi(rbfX(alpha), rbfMus(j), rbfSigma)];
+				else
+					phiMatrix = [phiMatrix, phi(rbfX(alpha), rbfMus(j), rbfSigma)];
+				endif
+			endfor
+		endfor
+		rbfT = dataTrainingC;
+		rbfT(:,4:4)=[]; # delete the filler
+		rbfT(:,1:2)=[]; # delete the data
+rbfT
+		rbfW = pinv(phiMatrix) * rbfT';
+	endif
+#rbfW
+#phi(point, rbfMus, rbfSigma)
+rbfMus
+point
+	_cls = rbfW * phi(point, rbfMus, rbfSigma);
 endfunction
 
 function _cls = plotClassifier(dataTrainingC, dataTrainingP, classifier, nameSuffix)
@@ -224,6 +259,14 @@ function plotParzen(dataTrainingC, dataTrainingP, mySigma)
 	plotClassifier(dataTrainingC, dataTrainingP, 'classifierParzen', strcat("sigma_", num2str(parzenSigma)));
 endfunction
 
+function plotRbf(dataTrainingC, dataTrainingP, myK, mySigma)
+	global rbfK;
+	global rbfSigma;
+	rbfK = myK;
+	rbfSigma = mySigma;
+	plotClassifier(dataTrainingC, dataTrainingP, 'classifierRbf', strcat("k_", num2str(rbfK), "_sigma_", num2str(rbfSigma)));
+endfunction
+
 
 
 dataTrainingP = generateSamples();
@@ -236,12 +279,17 @@ global stepSize = 0.3;
 
 
 
-plotKnn(dataTrainingC, dataTrainingP, 1);
-plotKnn(dataTrainingC, dataTrainingP, 5);
-plotKnn(dataTrainingC, dataTrainingP, 25);
+%plotKnn(dataTrainingC, dataTrainingP, 1);
+%plotKnn(dataTrainingC, dataTrainingP, 5);
+%plotKnn(dataTrainingC, dataTrainingP, 25);
 
-plotParzen(dataTrainingC, dataTrainingP, 0.01);
-plotParzen(dataTrainingC, dataTrainingP, 0.1);
-plotParzen(dataTrainingC, dataTrainingP, 0.5);
+%plotParzen(dataTrainingC, dataTrainingP, 0.01);
+%plotParzen(dataTrainingC, dataTrainingP, 0.1);
+%plotParzen(dataTrainingC, dataTrainingP, 0.5);
+
+plotRbf(dataTrainingC, dataTrainingP, 4,  0.1);
+%plotRbf(dataTrainingC, dataTrainingP, 4, 0.5);
+%plotRbf(dataTrainingC, dataTrainingP, 5, 0.1);
+%plotRbf(dataTrainingC, dataTrainingP, 5, 0.5);
 
 
