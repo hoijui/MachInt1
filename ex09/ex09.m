@@ -96,12 +96,12 @@ function _pn = pn(dataTrainingC, point, parzenSigma)
 		x = [dataTrainingC(i, 1), dataTrainingC(i, 2)]; # training data point
 		t = dataTrainingC(i, 3); # label
 		# add distance and target of current point
-		classesWeighted(t) += 1 / sqrt(2*PI*parzenSigma^2) * exp(-distance(point, x)^2 / (2*parzenSigma^2));
+		classesWeighted(t) += 1 / sqrt(2*pi*parzenSigma^2) * exp(-distance(point, x)^2 / (2*parzenSigma^2));
 	endfor
 	if classesWeighted(1) > classesWeighted(2)
-		_knn = 1;
+		_pn = 1;
 	else
-		_knn = 2;
+		_pn = 2;
 	endif
 endfunction
 
