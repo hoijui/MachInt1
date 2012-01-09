@@ -56,7 +56,7 @@ endfunction
 mySamples = generateSamples();
 
 
-DATA = [
+global DATA = [
 	mySamples(1,:)' mySamples(2,:)' 1 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1);
 	mySamples(3,:)' mySamples(4,:)' 2 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1)];
 
