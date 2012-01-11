@@ -155,7 +155,7 @@ function plotClsDist(dataTrainingP, testC1, testC2, name)
 
 	plot(dataTrainingP(1,:), dataTrainingP(2,:), 'r*');
 	plot(dataTrainingP(3,:), dataTrainingP(4,:), 'b*');
-	title(strcat("Distribution ", name));
+	title(strrep(strcat("Distribution_", name), "_", " "));
 	legend(["test-C1"; "test-C2"; "training-C1"; "training-C2"]);
 	print(strcat("out_", name, ".png"), "-dpng");
 	hold off
