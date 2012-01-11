@@ -310,17 +310,20 @@ global stepSize = 0.3;
 
 
 
-%plotKnn(dataTrainingC, dataTrainingP, 1);
-%plotKnn(dataTrainingC, dataTrainingP, 5);
-%plotKnn(dataTrainingC, dataTrainingP, 25);
 
-%plotParzen(dataTrainingC, dataTrainingP, 0.01);
-%plotParzen(dataTrainingC, dataTrainingP, 0.1);
-%plotParzen(dataTrainingC, dataTrainingP, 0.5);
+for myK = [1, 5, 25]
+	plotKnn(dataTrainingC, dataTrainingP, myK);
+endfor
 
-plotRbf(dataTrainingC, dataTrainingP, 4,  0.1);
-%plotRbf(dataTrainingC, dataTrainingP, 4, 0.5);
-%plotRbf(dataTrainingC, dataTrainingP, 5, 0.1);
-%plotRbf(dataTrainingC, dataTrainingP, 5, 0.5);
+for mySigma = [0.01, 0.1, 0.5]
+	plotParzen(dataTrainingC, dataTrainingP, mySigma);
+endfor
+
+
+for myK = [4, 8]
+	for mySigma = [0.01, 0.015, 0.02, 0.025, 0.5]
+		plotRbf(dataTrainingC, dataTrainingP, myK, mySigma);
+	endfor
+endfor
 
 
