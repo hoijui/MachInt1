@@ -174,7 +174,6 @@ function _classifiedGrid = classifyGrid(dataTrainingC, classifier)
 			_classifiedGrid(tdi, 1) = x;
 			_classifiedGrid(tdi, 2) = y;
 			isInit = (x == -1) && (y == -1);
-isInit
 			_classifiedGrid(tdi, 3) = feval(classifier, dataTrainingC, [x, y], isInit);
 		endfor
 	endfor
@@ -215,26 +214,38 @@ function _cls = classifierRbf(dataTrainingC, point, isInit)
 		rbfX = dataTrainingC;
 		rbfX(:,3:end)=[]; # delete the labels
 		phiMatrix = [];
-		for j = 1:length(rbfMus)
+		for j = 1:rbfK
+			phiCol = [];
 			for alpha = 1:length(rbfX)
-				if alpha == 1 && j != 1
-					phiMatrix = [phiMatrix; phi(rbfX(alpha), rbfMus(j), rbfSigma)];
-				else
-					phiMatrix = [phiMatrix, phi(rbfX(alpha), rbfMus(j), rbfSigma)];
-				endif
+					phiCol = [phiCol; phi(rbfX(alpha), rbfMus(j), rbfSigma)];
 			endfor
+			phiMatrix = [phiMatrix phiCol];
 		endfor
+		% once we are here, phiMatrix is 80x4
+
+		phiMatrix = [phiMatrix ones(length(rbfX), 1)]; % add bias, phiMatrix is now 80x5
+		% get labels
 		rbfT = dataTrainingC;
-		rbfT(:,4:4)=[]; # delete the filler
+		rbfT(:,4)=[]; # delete the filler
 		rbfT(:,1:2)=[]; # delete the data
-rbfT
-		rbfW = pinv(phiMatrix) * rbfT';
+		% comute weight vector
+		rbfW = pinv(phiMatrix) * rbfT;
 	endif
-#rbfW
-#phi(point, rbfMus, rbfSigma)
-rbfMus
-point
-	_cls = rbfW * phi(point, rbfMus, rbfSigma);
+
+	% compute output
+	y = 0;
+	for j = 1:(rbfK)
+		phiJ = phi(point, rbfMus(j), rbfSigma);
+		y += rbfW(j) * phiJ;
+	endfor
+	% add bias
+	y += y + rbfW(rbfK+1) * 1.0;
+
+	if y < 0
+		_cls = 1;
+	else
+		_cls = 2;
+	endif
 endfunction
 
 function _cls = plotClassifier(dataTrainingC, dataTrainingP, classifier, nameSuffix)
