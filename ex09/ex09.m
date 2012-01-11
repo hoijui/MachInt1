@@ -209,6 +209,8 @@ function _cls = classifierRbf(dataTrainingC, point, isInit)
 	global rbfMus;
 	global rbfX;
 	global rbfW;
+	global rbfWC1;
+	global rbfWC2;
 	if isInit
 		rbfMus = kmeans(dataTrainingC, rbfK);
 		rbfX = dataTrainingC;
@@ -229,19 +231,30 @@ function _cls = classifierRbf(dataTrainingC, point, isInit)
 		rbfT(:,4)=[]; # delete the filler
 		rbfT(:,1:2)=[]; # delete the data
 		% comute weight vector
-		rbfW = pinv(phiMatrix) * rbfT;
+		%rbfW = pinv(phiMatrix) * rbfT;
+		rbfTC1 = [ones(40, 1); zeros(40, 1)];
+		rbfTC2 = [zeros(40, 1); ones(40, 1)];
+		rbfWC1 = pinv(phiMatrix) * rbfTC1;
+		rbfWC2 = pinv(phiMatrix) * rbfTC2;
 	endif
 
 	% compute output
-	y = 0;
+	%_y = 0;
+	_yC1 = 0;
+	_yC2 = 0;
 	for j = 1:(rbfK)
 		phiJ = phi(point, rbfMus(j), rbfSigma);
-		y += rbfW(j) * phiJ;
+		%_y += rbfW(j) * phiJ;
+		_yC1 += rbfWC1(j) * phiJ;
+		_yC2 += rbfWC2(j) * phiJ;
 	endfor
 	% add bias
-	y += y + rbfW(rbfK+1) * 1.0;
+	%_y += _y + rbfW(rbfK+1) * 1.0;
+	_yC1 += _yC1 + rbfWC1(rbfK+1) * 1.0;
+	_yC2 += _yC2 + rbfWC2(rbfK+1) * 1.0;
 
-	if y < 0
+	%if _y < 1.5
+	if _yC1 < _yC2
 		_cls = 1;
 	else
 		_cls = 2;
