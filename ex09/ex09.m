@@ -306,7 +306,7 @@ dataTrainingC = [
 	dataTrainingP(1,:)' dataTrainingP(2,:)' 1 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1);
 	dataTrainingP(3,:)' dataTrainingP(4,:)' 2 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1)];
 
-global stepSize = 0.3;
+global stepSize = 0.03;
 
 
 
