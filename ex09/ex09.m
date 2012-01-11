@@ -147,18 +147,21 @@ endfunction
 
 function plotClsDist(dataTrainingP, testC1, testC2, name)
 	global mySamples;
+	global stepSize;
+
+	distSymbSize = 40 * stepSize;
 
 	f = figure('Visible', 'off');
 	hold on
 	if length(testC1) > 0
-		plot(testC1'(1,:), testC1'(2,:), 'r+', 'markersize', 20);
+		plot(testC1'(1,:), testC1'(2,:), '*', 'color', [1.0 0.5 0.5], 'markersize', distSymbSize);
 	endif
 	if length(testC2) > 0
-		plot(testC2'(1,:)', testC2'(2,:), 'b+', 'markersize', 20);
+		plot(testC2'(1,:)', testC2'(2,:), '*', 'color', [0.5 0.5 1.0], 'markersize', distSymbSize);
 	endif
 
-	plot(dataTrainingP(1,:), dataTrainingP(2,:), 'r*');
-	plot(dataTrainingP(3,:), dataTrainingP(4,:), 'b*');
+	plot(dataTrainingP(1,:), dataTrainingP(2,:), '*', 'color', [1.0 0.0 0.0]);
+	plot(dataTrainingP(3,:), dataTrainingP(4,:), '*', 'color', [0.0 0.0 1.0]);
 	title(strrep(strcat("Distribution_", name), "_", " "));
 	legend(["test-C_1"; "test-C_2"; "training-C_1"; "training-C_2"]);
 	print(strcat("out_", name, ".png"), "-dpng");
