@@ -149,7 +149,7 @@ function plotClsDist(dataTrainingP, testC1, testC2, name)
 	global mySamples;
 	global stepSize;
 
-	distSymbSize = 40 * stepSize;
+	distSymbSize = 40 * sqrt(stepSize);
 
 	f = figure('Visible', 'off');
 	hold on
