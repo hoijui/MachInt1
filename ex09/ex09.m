@@ -150,8 +150,8 @@ function plotClsDist(dataTrainingP, testC1, testC2, name)
 
 	f = figure('Visible', 'off');
 	hold on
-	plot(testC1'(1,:), testC1'(2,:), 'g*');
-	plot(testC2'(1,:)', testC2'(2,:), 'm*');
+	plot(testC1'(1,:), testC1'(2,:), 'r+', 'markersize', 20);
+	plot(testC2'(1,:)', testC2'(2,:), 'b+', 'markersize', 20);
 
 	plot(dataTrainingP(1,:), dataTrainingP(2,:), 'r*');
 	plot(dataTrainingP(3,:), dataTrainingP(4,:), 'b*');
