@@ -162,7 +162,7 @@ function plotClsDist(dataTrainingP, testC1, testC2, name)
 
 	plot(dataTrainingP(1,:), dataTrainingP(2,:), '*', 'color', [1.0 0.0 0.0]);
 	plot(dataTrainingP(3,:), dataTrainingP(4,:), '*', 'color', [0.0 0.0 1.0]);
-	title(strrep(strcat("Distribution_", name), "_", " "));
+	title(strrep(strcat("Distribution_", strrep(name, "classifier", "")), "_", " "));
 	legend(["test-C_1"; "test-C_2"; "training-C_1"; "training-C_2"]);
 	print(strcat("out_", strrep(name, ".", ""), ".png"), "-dpng");
 	hold off
