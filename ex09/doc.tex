@@ -109,9 +109,7 @@ Since the exercise, this function has to be called four times with the changing 
 \\
 The function works as described in the following:\\
 \\
-Random data points are choosen as initial centroids. Thes centroids are updated in choosing for each data point the closest centroid and updating it.
-
-A loop goes over all training points and calculates the distance between two given points. For this, the function $distance()$ will be used. The results will be saved in an vektror that is sorted from the lowest to the highest distance. Just the $k$ values will be taken in the observations and summed. The rounded and normalized result will be returned and shows the responding classification.
+At first, the kmeans algorithm (from the script) is used to seperate the training data points into k cluster. Then, the weight vector is calculated as described in exercise notes. We use two weight vectors: One for each class. For it's calulation, the corresponding class's labels are set to 1, the others to zero. To determine a new data point's class, one has to compare the network's output for each weight vector. The highelst output determines the class.
 
 %function _cls = classifierRbf(dataTrainingC, point, isInit)
 \section{Results}
