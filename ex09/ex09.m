@@ -322,7 +322,7 @@ endfor
 
 
 for myK = [4, 8]
-	for mySigma = [0.01, 0.015, 0.02, 0.025, 0.5]
+	for mySigma = [0.01, 0.02]
 		plotRbf(dataTrainingC, dataTrainingP, myK, mySigma);
 	endfor
 endfor
