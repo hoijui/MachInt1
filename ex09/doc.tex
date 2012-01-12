@@ -11,12 +11,12 @@
 \setlength{\parskip}{10pt plus 1pt minus 1pt}
 
 \title{Machine Intelligence I - WS2011/2012\\Excercise 9}
-\author{Robin Vobruba (343773)}
+\author{Robin Vobruba, Rolf Schroeder, Marcus Grum, Robert Koppisch}
 \date{\today}
 
 \pdfinfo{%
   /Title    (Machine Intelligence I - WS2011/2012 - Excercise 9)
-  /Author   (Robin Vobruba, Rolf Schroeder, Marcus Grum, Robert ???)
+  /Author   (Robin Vobruba, Rolf Schroeder, Marcus Grum, Robert Koppisch)
   /Creator  ()
   /Producer ()
   /Subject  ()
@@ -30,20 +30,104 @@
 
 \maketitle
 
+\section{Implementations}
+As software platform we decided to use Octave of the Version 3.4.3, because it is similar to Mathlab of the version R2007b, where the majority of the group members had already experiences in programming with, and it is opensource software.\\
+\\
+The program itself will be started in commenting in the the functions that are described in the following three subpoints. Each function starts one run of a classification technique with a certain set of parameters. More specific informations can be seen at the specific subpoints.\\
+\\
+In general, befor applying at least one of the three classification techniques, there are some steps done as initialisation. Those are presented in the following:\\
+\\
+The $DataTrainingP$ is built in using the $generateSamples()$ function. Here, the Sample are generated w.r.t. a mixture of Gaussians with centers in XOR-configuration in the first two loops, where p is incremented. In the second two loops, where s is incremented, the two centers are related to the previous generated samples. All those are returned. Hence , $DataTrainingP$ looks like the following line shows:
+\begin{align}
+DataTrainingP = [samplesC1Y; samplesC1X; samplesC2Y; samplesC2X]
+\end{align}
+The $DataTrainingC$ is built for handling the plotting steps easier and rearranges the elements of $DataTrainingP$ as you can see in the following line:
+\begin{align}
+DataTrainingC =
+\left(
+%this is a table
+\begin{array}{cccc}
+	SamplesCY & SamplesCX & corresponding Cluster	& 0\\
+\end{array}
+\right),
+\end{align} where the Samples are sorted by their Clusters.\\
+\\
+The global variable $stepSize$ is initialized at the beginning, because with it the ploting correctnes can be increased or decreased easily. These changes affect the computing duration very much. Hence, for the test runs, a big step size has been chosen ($stepSize$=1) and in the end it has been adjusted ($stepSize$=0,3).\\
+\\
+In general, always when one of the three classification functions will be called, a controle function will be used in the second step like an interface, that handels different, variable names and handel plotting organization. It is presented in the following line:
+\begin{align}
+plotClassifier(dataTrainingC, dataTrainingP, classificationName, params);
+\end{align}
+For the classification function of "k Nearest Neighbours" the $classificationName$ is set to 'classifierKnn', for the classification function of "Parzen Windows" it is set to 'classifierParzen' and for the classification function of "Radial Basis Functions" it is set to 'classifierRbf'.\\
+\\
+Also the individual parameter $params$ have to be set dependent on the called classification function. For the classification function of "k Nearest Neighbours" it is set to 'classifierKnn', for the classification function of "Parzen Windows" it is set to 'classifierParzen' and for the classification function of "Radial Basis Functions" it is set to 'classifierRbf'.\\
+\\
+This function calculates dependently on the selected classification function the $classified Grid$, the $testClassData$ and forwards the data to the function $plotClsDist$ that plots and saves them.\\
+\\
+For this, it has to be stated, that $classifiedGrid$ is built in using the function $classifyGrid(...)$. Here, a n*n matrix will be calculated, that has a range from -1 to 2 with the chosen $stepSize$. It recalculates values of certain squares depending on the chosen classification function in order to visualize the decision boundary in every plot. With this matrix, two matrixes called $testClassData1$ and $testClassData2$ are built in using the same function\\
+$separateTestDataIntoClasses(...)$. Here, the values of the $classifiedGrid$ are separated corresponding to their classification and the two variables can be plotted in different colours.\\
+\\
+There are still certain small functions used by all of the three classification techniques that are just selecting or calculating certain points or single variables. In the following, they are just mentioned:\\
+$-  function centroids = kmeans(dataTrainingC, k),\\
+ -  function phi = phi(x, rbfMu, rbfSigma),\\
+ -  function point = getPoint(data, index).\\
+$
+\subsection{k Nearest Neighbors (9.1)}
+In commenting in the following function, the classification techniques called "k Nearest Neighbours" will be used:
+\begin{align}
+plotKnn(dataTrainingC, dataTrainingP, k);
+\end{align}
+The parameter $dataTrainingC$ and $dataTrainingP$ are the same ones, that are already described in the general part. The parameter $k$ is standing for the number of the neighbours to whom the distance will be measured by using this function.
+Since the exercise, this function has to be called three times with the changing parameter $k$=1, 5, 25.\\
+\\
+The function works as described in the following:\\
+\\
+A loop goes over all training points and calculates the distance between two given points. For this, the function $distance()$ will be used. The results will be saved in an vektror that is sorted from the lowest to the highest distance. Just the $k$ values will be taken in the observations and summed. The rounded and normalized result will be returned and shows the responding classification.
+%function _cls = classifierKnn(dataTrainingC, point, isInit)
+%function _distance = distance(p1, p2)
+\subsection{Parzen Windows (9.2)}
+In commenting in the following function, the classification techniques called "Parzen Windows" will be used:\\
+\begin{align}
+plotParzen(dataTrainingC, dataTrainingP, \sigma^2);
+\end{align}
+The parameter $dataTrainingC$ and $dataTrainingP$ are the same ones, that are already described in the general part. The parameter $\sigma^2$ is standing for the variance that specifies the Gaussian function with whom the distance and with this the categorization will be specified.
+Since the exercise, this function has to be called three times with the changing parameter $\sigma^2$=0,01, 0,1, 0,5.\\
+\\
+The function works as described in the following:\\
+\\
+A loop goes over all training points and calculates the simized weight of every point between two given points. For this, the function $distance()$ will be used. Dependent on the size, the responding classification will be set and returned.\\
+$w(t) = \frac{1} / {\sqrt(2*\pi*\sigma^2)} * \exp(\frac{-distance(point, x)^2} /{ (2*\sigma^2)});
+$
+dddddd
+%function _cls = classifierParzen(dataTrainingC, point, isInit)
+\subsection{Radial Basis Functions (9.3)}
+In commenting in the following function, the classification techniques called "Parzen Windows" will be used:\\
+\begin{align}
+plotRbf(dataTrainingC, dataTrainingP, k, \sigma);
+\end{align}
+The parameter $dataTrainingC$ and $dataTrainingP$ are the same ones, that are already described in the general part. The parameter $k$ is standing for the chosen number of clusters and $\sigma$ is standing for the width that specifies the Gaussian function and with this the radial basis function.
+Since the exercise, this function has to be called four times with the changing parameter $k$=4, 5 and $\sigma$=0,1, 0,5.\\
+\\
+The function works as described in the following:\\
+\\
+%function _cls = classifierRbf(dataTrainingC, point, isInit)
+\section{Results}
 
-\section{k Nearest Neighbors (9.1)}
-
-TODO
-
-
-\section{Parzen Windows (9.2)}
-
-TODO
-
-
-\section{Radial Basis Functions (9.3)}
-
-TODO
-
-
+\subsection{k Nearest Neighbors (9.1)}
+The visualized the plots for k = 1, 5, 25 are presented in the following.\\
+In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue. The corresponding decision boundaries are for $C_1$ colored in green and for $C_2$ colored in magenta. \\
+\\TODO insert pictures
+At the set with $k$=1, it becomes possible that single far spread points creat an own bubble. It is like an overfitting. The greater the chosen $k$, the higher is the probability, that these errors are eliminated. With this, the danger of underfitting increases.
+\subsection{Parzen Windows (9.2)}
+The visualized the plots for $\sigma^2$ = 0,01, 0,1, 5 are presented in the following.\\
+In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue. The corresponding decision boundaries are for $C_1$ colored in green and for $C_2$ colored in magenta. \\
+\\
+TODO insert pictures
+The greater the $\sigma$, the bigger becomes the influence of great distances. In the pictures we can see this in an expanding bubble size. Similar to the previous classification algorithm, the danger of overfitting decreases with higher $\sigma$ but can theoretically also result in underfitting. This was for us not detecable at all.
+\subsection{Radial Basis Functions (9.3)}
+The visualized the plots for chosen cluster numbers k = 4, 5 and width $\sigma$ = 0,1, 0,5 are presented in the following.\\
+In all plots you can see the data related to $C_1$ colored in red, related to $C_2$ colored in blue, $C_3$ colored in ..., $C_4$ colored in ... and $C_5$ colored in ...\\The corresponding decision boundaries are for $C_1$ colored in ..., for $C_2$ colored in ..., $C_3$ colored in ..., $C_4$ colored in ... and $C_5$ colored in ...\\ 
+\\
+k darf nicht groesser oder keiner als 4, $\sigma$ 0,05 da sonst nur 1 Klassenzuweisung
+TODO insert pictures
 \end{document}
