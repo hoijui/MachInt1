@@ -111,23 +111,41 @@ Since the exercise, this function has to be called four times with the changing 
 The function works as described in the following:\\
 \\
 %function _cls = classifierRbf(dataTrainingC, point, isInit)
+
+
 \section{Results}
 
 \subsection{k Nearest Neighbors (9.1)}
-The visualized the plots for k = 1, 5, 25 are presented in the following.\\
-In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue. The corresponding decision boundaries are for $C_1$ colored in green and for $C_2$ colored in magenta. \\
-\\TODO insert pictures
-At the set with $k$=1, it becomes possible that single far spread points creat an own bubble. It is like an overfitting. The greater the chosen $k$, the higher is the probability, that these errors are eliminated. With this, the danger of underfitting increases.
+The visualized the plots for $k = 1, 5, 25$ are presented in the following.
+
+In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue.
+The corresponding decision boundaries are for $C_1$ colored in green and for $C_2$ colored in magenta.
+
+TODO insert pictures
+
+At the set with $k = 1$, it becomes possible that single far spread points creat an own bubble.
+It is like overfitting.
+The greater the chosen $k$, the higher is the probability, that these errors are eliminated.
+With this, the danger of underfitting increases.
+
+
 \subsection{Parzen Windows (9.2)}
-The visualized the plots for $\sigma^2$ = 0,01, 0,1, 5 are presented in the following.\\
-In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue. The corresponding decision boundaries are for $C_1$ colored in green and for $C_2$ colored in magenta. \\
-\\
+The visualized the plots for $\sigma^2$ = 0,01, 0,1, 5 are presented in the following.
+
 TODO insert pictures
-The greater the $\sigma$, the bigger becomes the influence of great distances. In the pictures we can see this in an expanding bubble size. Similar to the previous classification algorithm, the danger of overfitting decreases with higher $\sigma$ but can theoretically also result in underfitting. This was for us not detecable at all.
+
+The greater the $\sigma$, the bigger becomes the influence of great distances.
+In the pictures we can see this in an expanding bubble size.
+Similar to the previous classification algorithm, the danger of overfitting decreases with higher $\sigma$,
+but can theoretically also result in underfitting.
+This was for us not detecable at all.
+
 \subsection{Radial Basis Functions (9.3)}
-The visualized the plots for chosen cluster numbers k = 4, 5 and width $\sigma$ = 0,1, 0,5 are presented in the following.\\
-In all plots you can see the data related to $C_1$ colored in red, related to $C_2$ colored in blue, $C_3$ colored in ..., $C_4$ colored in ... and $C_5$ colored in ...\\The corresponding decision boundaries are for $C_1$ colored in ..., for $C_2$ colored in ..., $C_3$ colored in ..., $C_4$ colored in ... and $C_5$ colored in ...\\ 
-\\
-k darf nicht groesser oder keiner als 4, $\sigma$ 0,05 da sonst nur 1 Klassenzuweisung
+The visualized the plots for chosen cluster numbers k = 4, 5 and width $\sigma$ = 0,1, 0,5 are presented in the following.
+
+Good values for $k$ are multiples of 4. we tried with 4, 8, 16 and 32, which all lead to practically identical results.
+$\sigma$ has to be at least 0.015, or else it will not be able to detect two classes at all.
+
 TODO insert pictures
+
 \end{document}
