@@ -134,17 +134,18 @@ At first, the kmeans algorithm (from the script) is used to seperate the trainin
 
 \newcommand{\classifierPlotWidth}[0]{0.85}
 
+In all plots you can see the data related to $C_1$ colored in red, related to $C_2$ colored in blue.
+The corresponding decision boundaries $C_1$ and $C_2$ are colored adequately.
+
+
 \subsection{k Nearest Neighbors (9.1)}
 The the plots for $k = 1, 5, 25$ are presented in fig.
 \ref{fig:out_classifierKnn_k_1},
 \ref{fig:out_classifierKnn_k_5} and
 \ref{fig:out_classifierKnn_k_25}.
 
-In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue.
-The corresponding decision boundaries $C_1$ and $C_2$ are colored adeguately.
-
 \image{out_classifierKnn_k_1}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 1$.}
+	{The training patterns and \emph{$k$ Nearest Neighbors} decision boundaries for $k = 1$.}
 
 \image{out_classifierKnn_k_5}{\classifierPlotWidth}%
 	{The training patterns and decision boundaries for $k = 5$.}
@@ -152,9 +153,11 @@ The corresponding decision boundaries $C_1$ and $C_2$ are colored adeguately.
 \image{out_classifierKnn_k_25}{\classifierPlotWidth}%
 	{The training patterns and decision boundaries for $k = 25$.}
 
-At the set with $k = 1$, it becomes possible that single far spread points creat an own bubble.
-It is like an overfitting. The greater the chosen $k$, the higher is the probability, that these errors are eliminated.
-With this, the danger of underfitting increases.
+At the set with $k = 1$, it becomes possible that single far spread points
+create their own bubble in the decission boundary landscape.
+We may think of this as overfitting.
+The greater the chosen $k$, the higher the probability that these errors are eliminated.
+Though, the danger of underfitting increases at the same time.
 
 
 \subsection{Parzen Windows (9.2)}
@@ -163,17 +166,14 @@ The the plots for $\sigma^2 = 0.01, 0.1, 0.5$ are presented in fig.
 \ref{fig:out_classifierParzen_sigma2_01} and
 \ref{fig:out_classifierParzen_sigma2_05}.
 
-In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue.
-The corresponding decision boundaries $C_1$ and $C_2$ are colored adeguately.
-
 \image{out_classifierParzen_sigma2_001}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $\sigma = 0.01$.}
+	{The training patterns and \emph{Parzen Windows} decision boundaries for $\sigma = 0.01$.}
 
 \image{out_classifierParzen_sigma2_01}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $\sigma = 0.1$.}
+	{The training patterns and \emph{Parzen Windows} decision boundaries for $\sigma = 0.1$.}
 
 \image{out_classifierParzen_sigma2_05}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $\sigma = 0.5$.}
+	{The training patterns and \emph{Parzen Windows} decision boundaries for $\sigma = 0.5$.}
 
 The greater the $\sigma$, the bigger becomes the influence of great distances.
 In the pictures we can see this in an expanding bubble size.
@@ -196,43 +196,39 @@ while the ones ofr $k = 8$ can be found in fig.
 \ref{fig:out_classifierRbf_k_8_sigma_0025} and
 \ref{fig:out_classifierRbf_k_8_sigma_05}.
 
-In all plots you can see the data related to $C_1$ colored in red, related to $C_2$ colored in blue.
-The corresponding decision boundaries $C_1$ and $C_2$ are colored adequately.
-
 \image{out_classifierRbf_k_4_sigma_001}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 4$ and $\sigma = 0.01$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 4$ and $\sigma = 0.01$.}
 
 \image{out_classifierRbf_k_4_sigma_0015}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 4$ and $\sigma = 0.015$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 4$ and $\sigma = 0.015$.}
 
 \image{out_classifierRbf_k_4_sigma_002}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 4$ and $\sigma = 0.02$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 4$ and $\sigma = 0.02$.}
 
 \image{out_classifierRbf_k_4_sigma_0025}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 4$ and $\sigma = 0.025$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 4$ and $\sigma = 0.025$.}
 
 \image{out_classifierRbf_k_4_sigma_05}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 4$ and $\sigma = 0.5$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 4$ and $\sigma = 0.5$.}
 
 \image{out_classifierRbf_k_8_sigma_001}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 8$ and $\sigma = 0.01$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 8$ and $\sigma = 0.01$.}
 
 \image{out_classifierRbf_k_8_sigma_0015}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 8$ and $\sigma = 0.015$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 8$ and $\sigma = 0.015$.}
 
 \image{out_classifierRbf_k_8_sigma_002}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 8$ and $\sigma = 0.02$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 8$ and $\sigma = 0.02$.}
 
 \image{out_classifierRbf_k_8_sigma_0025}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 8$ and $\sigma = 0.025$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 8$ and $\sigma = 0.025$.}
 
 \image{out_classifierRbf_k_8_sigma_05}{\classifierPlotWidth}%
-	{The training patterns and decision boundaries for $k = 8$ and $\sigma = 0.5$.}
+	{The training patterns and \emph{RBF} decision boundaries for $k = 8$ and $\sigma = 0.5$.}
 
-
-In searching an effective set of params, we noticed, that $k$ and $\sigma$ may not be smaller than $k=4$ and $\sigma = 0.01$.
-Other values result in the fact that only one class wil be detected,
+In searching an effective set of params, we noticed that $k$ and $\sigma$ may not be smaller than $k = 4$ and $\sigma = 0.015$.
+Other values result in the fact that only one class will be detected,
 for example when setting $k = 4$ and $\sigma = 0.01$.
-The idea of over- and underfitting out of the previous tasks can be found here too.
+The idea of over- and underfitting out of the previous classification methods can be found here too.
 
 \end{document}
