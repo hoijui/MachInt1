@@ -16,7 +16,7 @@
 
 \pdfinfo{%
   /Title    (Machine Intelligence I - WS2011/2012 - Excercise 9)
-  /Author   (Robin Vobruba, Rolf Schroeder, Marcus Grum, Robert Koppisch)
+  /Author   (Robin Vobruba, Rolf Schroeder, Marcus Grum, Robert K oppisch)
   /Creator  ()
   /Producer ()
   /Subject  ()
@@ -35,15 +35,15 @@ As software platform we decided to use Octave of the Version 3.4.3, because it i
 \\
 The program itself will be started in commenting in the the functions that are described in the following three subpoints. Each function starts one run of a classification technique with a certain set of parameters. More specific informations can be seen at the specific subpoints.\\
 \\
-In general, befor applying at least one of the three classification techniques, there are some steps done as initialisation. Those are presented in the following:\\
+In general, before applying at least one of the three classification techniques, there are some steps done as initialisation. Those are presented in the following:\\
 \\
-The $DataTrainingP$ is built in using the $generateSamples()$ function. Here, the Sample are generated w.r.t. a mixture of Gaussians with centers in XOR-configuration in the first two loops, where p is incremented. In the second two loops, where s is incremented, the two centers are related to the previous generated samples. All those are returned. Hence , $DataTrainingP$ looks like the following line shows:
+The $DataTrainingP$ is built in using the $generateSamples()$ function. Here, the samples are generated w.r.t. a mixture of Gaussians with centers in XOR-configuration in the first two loops, where p is incremented. In the second two loops, where s is incremented, the two centers are related to the previous generated samples. All those are returned. Hence , $DataTrainingP$ looks like the following line shows:
 \begin{align}
 DataTrainingP = [samplesC1Y; samplesC1X; samplesC2Y; samplesC2X]
 \end{align}
 The $DataTrainingC$ is built for handling the plotting steps easier and rearranges the elements of $DataTrainingP$ as you can see in the following line:
 \begin{align}
-DataTrainingC =
+DataTrainingC = 
 \left(
 %this is a table
 \begin{array}{cccc}
@@ -52,9 +52,9 @@ DataTrainingC =
 \right),
 \end{align} where the Samples are sorted by their Clusters.\\
 \\
-The global variable $stepSize$ is initialized at the beginning, because with it the ploting correctnes can be increased or decreased easily. These changes affect the computing duration very much. Hence, for the test runs, a big step size has been chosen ($stepSize$=1) and in the end it has been adjusted ($stepSize$=0,3).\\
+The global variable $stepSize$ is initialized at the beginning, because with it the ploting correctnes can be increased or decreased easily. These changes affect the computing duration very much. Hence, for the test runs, a big step size has been chosen ($stepSize$=1) and in the end, it has been adjusted ($stepSize$=0,3).\\
 \\
-In general, always when one of the three classification functions will be called, a controle function will be used in the second step like an interface, that handels different, variable names and handel plotting organization. It is presented in the following line:
+In general, always when one of the three classification functions will be called, a controle function will be used in the second step like an interface, that handels different, variable names and plotting organization. It is presented in the following line:
 \begin{align}
 plotClassifier(dataTrainingC, dataTrainingP, classificationName, params);
 \end{align}
@@ -72,6 +72,8 @@ $-  function centroids = kmeans(dataTrainingC, k),\\
  -  function phi = phi(x, rbfMu, rbfSigma),\\
  -  function point = getPoint(data, index).\\
 $
+\\
+The function $kmeans(dataTrainingC,k)$ is also implemented as was asked in the exercise in order to calculate the centroids.
 \subsection{k Nearest Neighbors (9.1)}
 In commenting in the following function, the classification techniques called "k Nearest Neighbours" will be used:
 \begin{align}
@@ -95,11 +97,6 @@ Since the exercise, this function has to be called three times with the changing
 \\
 The function works as described in the following:\\
 \\
-A loop goes over all training points and calculates the simized weight of every point between two given points. For this, the function $distance()$ will be used. Dependent on the size, the responding classification will be set and returned.\\
-$w(t) = \frac{1} / {\sqrt(2*\pi*\sigma^2)} * \exp(\frac{-distance(point, x)^2} /{ (2*\sigma^2)});
-$
-dddddd
-%function _cls = classifierParzen(dataTrainingC, point, isInit)
 \subsection{Radial Basis Functions (9.3)}
 In commenting in the following function, the classification techniques called "Parzen Windows" will be used:\\
 \begin{align}
@@ -110,42 +107,145 @@ Since the exercise, this function has to be called four times with the changing 
 \\
 The function works as described in the following:\\
 \\
+Random data points are choosen as initial centroids. Thes centroids are updated in choosing for each data point the closest centroid and updating it.
+
+A loop goes over all training points and calculates the distance between two given points. For this, the function $distance()$ will be used. The results will be saved in an vektror that is sorted from the lowest to the highest distance. Just the $k$ values will be taken in the observations and summed. The rounded and normalized result will be returned and shows the responding classification.
+
 %function _cls = classifierRbf(dataTrainingC, point, isInit)
-
-
 \section{Results}
 
 \subsection{k Nearest Neighbors (9.1)}
-The visualized the plots for $k = 1, 5, 25$ are presented in the following.
-
-In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue.
-The corresponding decision boundaries are for $C_1$ colored in green and for $C_2$ colored in magenta.
-
-TODO insert pictures
-
-At the set with $k = 1$, it becomes possible that single far spread points creat an own bubble.
-It is like overfitting.
-The greater the chosen $k$, the higher is the probability, that these errors are eliminated.
-With this, the danger of underfitting increases.
-
-
+The visualized the plots for k = 1, 5, 25 are presented in figures (\ref{fig:out_classifierKnn_k_1},\ref{fig:out_classifierKnn_k_5} and \ref{fig:out_classifierKnn_k_25}).\\
+In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue. The corresponding decision boundaries $C_1$ and $C_2$ are colored adeguately.
+%\includegraphics{out_classifierKnn_k_1.png}
+%\includegraphics{out_classifierKnn_k_1}
+%\begin{figure}[!htbp]	
+%		\includegraphics[scale=.55]{out_classifierKnn_k_1}
+%\end{figure}
+%\includegraphics[bb=0 0 640 480,scale=0.3]{out_classifierKnn_k_1.png}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierKnn_k_1.png}
+\caption{This picture shows training patterns and decision boundaries for k=1...}
+\label{fig:out_classifierKnn_k_1}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierKnn_k_5.png}
+\caption{This picture shows training patterns and decision boundaries for k=5...}
+\label{fig:out_classifierKnn_k_5}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierKnn_k_25.png}
+\caption{This picture shows training patterns and decision boundaries for k=25...}
+\label{fig:out_classifierKnn_k_25}
+\end{figure}
+\\
+At the set with $k$=1, it becomes possible that single far spread points creat an own bubble. It is like an overfitting. The greater the chosen $k$, the higher is the probability, that these errors are eliminated. With this, the danger of underfitting increases.
 \subsection{Parzen Windows (9.2)}
-The visualized the plots for $\sigma^2$ = 0,01, 0,1, 5 are presented in the following.
-
-TODO insert pictures
-
-The greater the $\sigma$, the bigger becomes the influence of great distances.
-In the pictures we can see this in an expanding bubble size.
-Similar to the previous classification algorithm, the danger of overfitting decreases with higher $\sigma$,
-but can theoretically also result in underfitting.
-This was for us not detecable at all.
-
+The visualized the plots for $\sigma^2$ = 0,01, 0,1, 5 are presented in figures (\ref{fig:out_classifierParzen_sigma_0.01},\ref{fig:out_classifierParzen_sigma_0.1} and \ref{fig:out_classifierParzen_sigma_0.5}).\\
+In all plots you can see the data related to $C_1$ colored in red and related to $C_2$ colored in blue. The corresponding decision boundaries $C_1$ and $C_2$ are colored adeguately.  \\
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierParzen_sigma_0_01.png}
+\caption{This picture shows training patterns and decision boundaries for $\sigma=0.01$...}
+\label{fig:out_classifierParzen_sigma_0.01}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierParzen_sigma_0_1.png}
+\caption{This picture shows training patterns and decision boundaries for $\sigma=0.1$...}
+\label{fig:out_classifierParzen_sigma_0.1}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierParzen_sigma_0_5.png}
+\caption{This picture shows training patterns and decision boundaries for $\sigma=0.5$...}
+\label{fig:out_classifierParzen_sigma_0.5}
+\end{figure}
+\\
+The greater the $\sigma$, the bigger becomes the influence of great distances. In the pictures we can see this in an expanding bubble size. Similar to the previous classification algorithm, the danger of overfitting decreases with higher $\sigma$ but can theoretically also result in underfitting. This was for us not detecable at all.
 \subsection{Radial Basis Functions (9.3)}
-The visualized the plots for chosen cluster numbers k = 4, 5 and width $\sigma$ = 0,1, 0,5 are presented in the following.
-
-Good values for $k$ are multiples of 4. we tried with 4, 8, 16 and 32, which all lead to practically identical results.
-$\sigma$ has to be at least 0.015, or else it will not be able to detect two classes at all.
-
-TODO insert pictures
-
+The visualized the plots for width $\sigma$ = 0,01, 0,015, 0,02, 0,025, 0,5 are presented in figures (\ref{fig:out_classifierRbf_k_4_sigma_0.01},\ref{fig:out_classifierRbf_k_4_sigma_0.015}, \ref{fig:out_classifierRbf_k_4_sigma_0.02}, \ref{fig:out_classifierRbf_k_4_sigma_0.025} and \ref{fig:out_classifierRbf_k_4_sigma_0.5}) for chosen cluster number k = 4 and... in figures (\ref{fig:out_classifierRbf_k_8_sigma_0.01},\ref{fig:out_classifierRbf_k_8_sigma_0.015}, \ref{fig:out_classifierRbf_k_8_sigma_0.02}, \ref{fig:out_classifierRbf_k_8_sigma_0.025} and \ref{fig:out_classifierRbf_k_8_sigma_0.5}) for chosen cluster number k = 8.\\
+In all plots you can see the data related to $C_1$ colored in red, related to $C_2$ colored in blue. The corresponding decision boundaries $C_1$ and $C_2$ are colored adequately.\\ 
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_4_sigma_0_01.png}
+\caption{This picture shows training patterns and decision boundaries for $k$=4 and $\sigma$=0.01...}
+\label{fig:out_classifierRbf_k_4_sigma_0.01}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_4_sigma_0_015.png}
+\caption{This picture shows training patterns and decision boundaries for $k$=4 and $\sigma$=0.015...}
+\label{fig:out_classifierRbf_k_4_sigma_0.015}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_4_sigma_0_02.png}
+\caption{This picture shows training patterns and decision boundaries for $k$=4 and $\sigma$=0.02...}
+\label{fig:out_classifierRbf_k_4_sigma_0.02}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_4_sigma_0_025.png}
+\caption{This picture shows training patterns and decision boundaries for $k$=4 and $\sigma$=0.025...}
+\label{fig:out_classifierRbf_k_4_sigma_0.025}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_4_sigma_0_5.png}
+\caption{This picture shows training patterns and decision boundaries for $k$=4 and $\sigma$=0.5...}
+\label{fig:out_classifierRbf_k_4_sigma_0.5}
+\end{figure}
+\\
+%%%%%%
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_8_sigma_0_01.png}
+\caption{This picture shows training patterns and decision boundaries for $k$=8 and $\sigma$=0.01...}
+\label{fig:out_classifierRbf_k_8_sigma_0.01}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_8_sigma_0_015.png}
+\caption{This picture shows training patterns and decision boundaries for $k$=8 and $\sigma$=0.015...}
+\label{fig:out_classifierRbf_k_8_sigma_0.015}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_8_sigma_0_02.png}
+\caption{This picture shows training patterns and decision boundaries for $k$=8 and $\sigma$=0.02...}
+\label{fig:out_classifierRbf_k_8_sigma_0.02}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_8_sigma_0_025.png}
+\caption{This picture shows training patterns and decision boundaries for $8$=4 and $\sigma$=0.025...}
+\label{fig:out_classifierRbf_k_8_sigma_0.025}
+\end{figure}
+\\
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{out_classifierRbf_k_8_sigma_0_5.png}
+\caption{This picture shows training patterns and decision boundaries for $k$=8 and $\sigma$=0.5...}
+\label{fig:out_classifierRbf_k_8_sigma_0.5}
+\end{figure}
+\\
+In searching an effective set of params, we noticed, that $k$ and $\sigma$ may not be smaller than $k$=4 and $\sigma$=0,01. Other values result to the fact that there will be just one Classification (set with $k$=4 and $\sigma$=0,01 falls out of the interpretation). The idea of over- and underfitting out of the previous tasks can here be found, too.
 \end{document}
