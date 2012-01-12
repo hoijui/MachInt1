@@ -97,6 +97,8 @@ Since the exercise, this function has to be called three times with the changing
 \\
 The function works as described in the following:\\
 \\
+A loop iterates over all training data points and weights this point's distance to the to be tested point by a Gaussian function (the current data point as $\mu$ and the variable parzenSigma as $\sigma$). The weighted distances are summed up (for each class) and the predicted class is the one having the highest sum.
+\\
 \subsection{Radial Basis Functions (9.3)}
 In commenting in the following function, the classification techniques called "Parzen Windows" will be used:\\
 \begin{align}
