@@ -285,10 +285,10 @@ function plotKnn(dataTrainingC, dataTrainingP, myK)
 	plotClassifier(dataTrainingC, dataTrainingP, 'classifierKnn', strcat("k_", num2str(k)));
 endfunction
 
-function plotParzen(dataTrainingC, dataTrainingP, mySigma)
+function plotParzen(dataTrainingC, dataTrainingP, mySigma2)
 	global parzenSigma;
-	parzenSigma = mySigma;
-	plotClassifier(dataTrainingC, dataTrainingP, 'classifierParzen', strcat("sigma_", num2str(parzenSigma)));
+	parzenSigma = sqrt(mySigma2);
+	plotClassifier(dataTrainingC, dataTrainingP, 'classifierParzen', strcat("sigma2_", num2str(mySigma2)));
 endfunction
 
 function plotRbf(dataTrainingC, dataTrainingP, myK, mySigma)
@@ -316,8 +316,8 @@ for myK = [1, 5, 25]
 	plotKnn(dataTrainingC, dataTrainingP, myK);
 endfor
 
-for mySigma = [0.01, 0.1, 0.5]
-	plotParzen(dataTrainingC, dataTrainingP, mySigma);
+for mySigma2 = [0.01, 0.1, 0.5]
+	plotParzen(dataTrainingC, dataTrainingP, mySigma2);
 endfor
 
 
