@@ -239,8 +239,9 @@ function _cls = classifierRbf(dataTrainingC, point, isInit)
 		rbfT(:,1:2)=[]; # delete the data
 		% comute weight vector
 		%rbfW = pinv(phiMatrix) * rbfT;
-		rbfTC1 = [ones(40, 1); zeros(40, 1)];
-		rbfTC2 = [zeros(40, 1); ones(40, 1)];
+		half = length(rbfX) / 2; % this is hard coded, won't work for more than 2 classes
+		rbfTC1 = [ones(half, 1); zeros(half, 1)]; % hard coded: we suppose, that the first half data points are class1, the second half class two
+		rbfTC2 = [zeros(half, 1); ones(half, 1)];
 		rbfWC1 = pinv(phiMatrix) * rbfTC1;
 		rbfWC2 = pinv(phiMatrix) * rbfTC2;
 	endif
