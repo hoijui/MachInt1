@@ -271,21 +271,16 @@ endfunction
 
 function _cls = classifierSvm(dataTrainingC, point, isInit)
 	global model;
+	global svmTrainOptions;
 	if isInit
 		d = 2; # number of input data dimensions
-		#model = svmtrain(training_label_vector, training_instance_matrix [, 'libsvm_options']);
-"init svm: ..."
 		trainingLabels = dataTrainingC';
 		trainingLabels(1:d,:) = []; # delete the first d rows
 		trainingLabels(1+1:end,:) = []; # delete everything except the first row
 		trainingInput = dataTrainingC';
 		trainingInput(d+1:end,:) = []; # delete everything except the first d rows
-trainingInput
-trainingLabels
-		model = svmtrain(trainingLabels', trainingInput');
-"init svm: done."
+		model = svmtrain(trainingLabels', trainingInput', svmTrainOptions);
 	endif
-	#[predicted_label, accuracy, decision_values/prob_estimates] = svmpredict(testing_label_vector, testing_instance_matrix, model [, 'libsvm_options']);
 	res = svmpredict(123.456, point, model);
 	_cls = res(1);
 endfunction
@@ -322,8 +317,10 @@ function plotRbf(dataTrainingC, dataTrainingP, myK, mySigma)
 	plotClassifier(dataTrainingC, dataTrainingP, 'classifierRbf', strcat("k_", num2str(rbfK), "_sigma_", num2str(rbfSigma)));
 endfunction
 
-function plotSvm(dataTrainingC, dataTrainingP)
-	plotClassifier(dataTrainingC, dataTrainingP, 'classifierSvm', "_dah");
+function plotSvm(dataTrainingC, dataTrainingP, mySvmTrainOptions)
+	global svmTrainOptions;
+	svmTrainOptions = mySvmTrainOptions;
+	plotClassifier(dataTrainingC, dataTrainingP, 'classifierSvm', svmTrainOptions);
 endfunction
 
 
@@ -354,8 +351,7 @@ for myK = [4, 8]
 endfor
 
 
-for mySigma2 = [0.01]
-	plotSvm(dataTrainingC, dataTrainingP);
-endfor
+# 11.2 C-SVM with standard parameters
+plotSvm(dataTrainingC, dataTrainingP, '');
 
 
