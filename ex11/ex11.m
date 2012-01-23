@@ -85,6 +85,66 @@ function _samples = generateSamples()
 	_samples = [samplesC1Y; samplesC1X; samplesC2Y; samplesC2X];
 endfunction
 
+function plotClsDist(dataTrainingP, testC1, testC2, name)
+	global mySamples;
+	global stepSize;
+
+	distSymbSize = 40 * sqrt(stepSize);
+
+	f = figure('Visible', 'off');
+	hold on
+	if length(testC1) > 0
+		plot(testC1'(1,:), testC1'(2,:), '*', 'color', [1.0 0.5 0.5], 'markersize', distSymbSize);
+	endif
+	if length(testC2) > 0
+		plot(testC2'(1,:)', testC2'(2,:), '*', 'color', [0.5 0.5 1.0], 'markersize', distSymbSize);
+	endif
+
+	plot(dataTrainingP(1,:), dataTrainingP(2,:), '*', 'color', [1.0 0.0 0.0]);
+	plot(dataTrainingP(3,:), dataTrainingP(4,:), '*', 'color', [0.0 0.0 1.0]);
+	title(strrep(strcat("Distribution_", strrep(name, "classifier", "")), "_", " "));
+	legend(["test-C_1"; "test-C_2"; "training-C_1"; "training-C_2"]);
+	print(strcat("out_", strrep(name, ".", ""), ".png"), "-dpng");
+	hold off
+endfunction
+function _classifiedGrid = classifyGrid(dataTrainingC, classifier)
+	global stepSize;
+
+	_classifiedGrid = [];
+
+	steps = -1 : stepSize : 2;
+	for x = steps
+		for y = steps
+			tdi = length(_classifiedGrid) + 1;
+			_classifiedGrid(tdi, 1) = x;
+			_classifiedGrid(tdi, 2) = y;
+			isInit = (x == -1) && (y == -1);
+			_classifiedGrid(tdi, 3) = feval(classifier, dataTrainingC, [x, y], isInit);
+		endfor
+	endfor
+endfunction
+function _testClassData = separateTestDataIntoClasses(classifiedGrid, wantedClass)
+	_testClassData = [];
+	for tdi = 1:length(classifiedGrid)
+		if classifiedGrid(tdi, 3) == wantedClass
+			newInd = length(_testClassData) + 1;
+			_testClassData(newInd, 1) = classifiedGrid(tdi, 1);
+			_testClassData(newInd, 2) = classifiedGrid(tdi, 2);
+			_testClassData(newInd, 3) = classifiedGrid(tdi, 3);
+		end
+	endfor
+endfunction
+function _cls = plotClassifier(dataTrainingC, dataTrainingP, classifier, nameSuffix)
+	classifiedGrid = classifyGrid(dataTrainingC, classifier);
+	testClassData1 = separateTestDataIntoClasses(classifiedGrid, 1);
+	testClassData2 = separateTestDataIntoClasses(classifiedGrid, 2);
+
+	name = strcat(classifier, "_", nameSuffix);
+	plotClsDist(dataTrainingP, testClassData1, testClassData2, name);
+endfunction
+
+
+
 dataTrainingP = generateSamples();
 
 dataTrainingC = [
