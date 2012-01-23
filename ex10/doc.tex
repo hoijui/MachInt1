@@ -1,0 +1,145 @@
+\documentclass[a4paper,headings=small]{scrartcl}
+\KOMAoptions{DIV=12}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multirow}
+
+% instead of using indents to denote a new paragraph, we add space before it
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{10pt plus 1pt minus 1pt}
+
+\title{Machine Intelligence I - WS2011/2012\\Excercise 10}
+\author{Robin Vobruba} % , Rolf Schroeder, Marcus Grum, Robert Koppisch
+\date{\today}
+
+\pdfinfo{%
+  /Title    (Machine Intelligence I - WS2011/2012 - Excercise 10)
+  /Author   (Robin Vobruba)
+  /Creator  ()
+  /Producer ()
+  /Subject  ()
+  /Keywords ()
+}
+
+% Simple picture reference
+%   Usage: \image{#1}{#2}{#3}
+%     #1: file-name of the image
+%     #2: percentual width (decimal)
+%     #3: caption/description
+%
+%   Example:
+%     \image{myPicture}{0.8}{My huge house}
+%     See fig. \ref{fig:myPicture}.
+\newcommand{\image}[3]{
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=#2\textwidth]{#1}
+		\caption{#3}
+		\label{fig:#1}
+	\end{figure}
+}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+\section{Perceptron (10.1)}
+
+\subsection{Cost-function gradient (10.1.a)}
+
+(see paper)
+
+\subsection{ (10.1.b)}
+
+online:
+\begin{verbatim}
+iterations = 1000
+w = random init uniformly [0, 1) = floor(rand(0, 1) * p) + 1
+foreach #iterations do:
+	foreach #TrainingData do:
+		x_i, y_i_real = pick a random training-data-point
+		#y__i_estimated = (w * x_i) + b
+		gradient_i = derive error_i by w
+		# example gradient: gradient_i = y_i_real - y_i_estimated
+		w = w - learningRate * gradient_i
+	endforeach
+endforeach
+\end{verbatim}
+
+batch:
+\begin{verbatim}
+iterations = 1000
+w = random init
+foreach #iterations do:
+	gradient = 0
+	foreach #TrainingData do:
+		x_i, y_i_real = pick the next training-data-point
+		y__i_estimated = (w * x_i) + b
+		gradient_i = derive error_i by w
+		gradient += gradient_i
+	endforeach
+	w = w + learningRate * gradient
+endforeach
+\end{verbatim}
+
+
+
+\subsection{ (10.1.c)}
+underfitting
+As otherwise, the perceptron would not converge to any solution,
+but jump between local minima in the case of unseparable data.
+In case of no optimal solution, we may still converge (change in error gets very small, instead of jumping around diferent minimas).
+
+\section{The primal SRM problem (10.2)}
+
+\subsection{ (10.2.a)}
+We try to maximize the margin, because the larger it is, the "lower the dimensionality`` of our classifier -> more robustness.
+In the case of a linear connectionist neuron and linearly separable data,
+we will most likely have one datapoint on the margin on one side,
+and two on the other side,
+if we do not allow margin errors.
+
+\subsection{ (10.2.b)}
+
+(see paper)
+
+\subsection{Explain SRM (10.2.c)}
+Minimize capacity of the model class under the constraint,
+that the empirical error is not too large.
+we try to keep the model simple, by trying using only
+a few exemplary data-points (support vectors),
+to calculate the decission boundaries, instead of all data-points.
+
+
+\section{The dual SRM problem (10.3)}
+
+\subsection{ (10.3.a)}
+
+BLA+
+
+We get sparse solutions, because we only use the support vectors,
+which make up only a fraction of the data-points.
+
+\subsection{ (10.3.b)}
+
+see paper+
+
+The regularization term is verwurstelt into the whole term, because we transformed it all.
+As we try to minimize minimize the weights, we use the $L_2$ norm ($|w|^2$)
+
+\subsection{ (10.3.c)}
+We stick to optimize only two $\lambda$s at a time (the worst ones),
+and do this iteratively.
+
+\subsection{ (10.3.d)}
+kernels need to (in general) be symmetric \& positive definitive.
+sigmoid transfer function is not a kernel, because it may give negative output.
+RBF function $\Phi$ (Gaussian) is a kernel.
+
+
+\end{document}
