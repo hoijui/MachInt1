@@ -428,3 +428,13 @@ xlabel("gamma");
 ylabel("C");
 print('out_parameterOptimization.png');
 
+
+
+# 11.4 C-SVM with optimal parameters
+# HACK There seems ot be a bug in the strcat function,
+#   which makes it trim all sub-strings.
+#   Thus we have to use the following trick.
+svmTrainOptions = strcat("-q -s 0 -c_", num2str(optimalParams(1)), " -g_", num2str(optimalParams(2)));
+svmTrainOptions = strrep(svmTrainOptions, "_", " ");
+plotSvm(dataTrainingC, dataTrainingP, svmTrainOptions);
+
