@@ -162,27 +162,59 @@ function plotClsDist(dataTrainingP, testC1, testC2, name)
 
 	plot(dataTrainingP(1,:), dataTrainingP(2,:), '*', 'color', [1.0 0.0 0.0]);
 	plot(dataTrainingP(3,:), dataTrainingP(4,:), '*', 'color', [0.0 0.0 1.0]);
-	title(strrep(strcat("Distribution_", strrep(name, "classifier", "")), "_", " "));
+	title(strrep(strcat("Distribution_", strrep(strrep(name, "multiClassifier", ""), "classifier", "")), "_", " "));
 	legend(["test-C_1"; "test-C_2"; "training-C_1"; "training-C_2"]);
 	print(strcat("out_", strrep(name, ".", ""), ".png"), "-dpng");
 	hold off
 endfunction
 
 
-function _classifiedGrid = classifyGrid(dataTrainingC, classifier)
+function _classifierGrid = createClassifierGrid(dataTrainingC)
 	global stepSize;
 
-	_classifiedGrid = [];
-
+	"creating classifier grid ..."
+	_classifierGrid = [];
 	steps = -1 : stepSize : 2;
 	for x = steps
 		for y = steps
-			tdi = length(_classifiedGrid) + 1;
-			_classifiedGrid(tdi, 1) = x;
-			_classifiedGrid(tdi, 2) = y;
-			isInit = (x == -1) && (y == -1);
-			_classifiedGrid(tdi, 3) = feval(classifier, dataTrainingC, [x, y], isInit);
+			_classifierGrid(end+1, [1, 2]) = [x, y];
 		endfor
+	endfor
+	"creating classifier grid done."
+endfunction
+
+function _classifierGridLabels = createClassifierGridLabels(classifierGrid)
+
+	"creating classifier grid labels ..."
+	_classifierGridLabels = [];
+	for cgi = 1 : length(classifierGrid')
+		x = sign(classifierGrid(cgi, 1) - 0.5);
+		if x == 0; x = -1; endif # cause sign(0.0) == 0 :/
+		y = sign(classifierGrid(cgi, 2) - 0.5);
+		if y == 0; y = -1; endif # cause sign(0.0) == 0 :/
+		x = (-x + 1) / 2;
+		y = ( y + 1) / 2;
+		c = xor(x, y) + 1;
+		_classifierGridLabels(end+1) = c;
+	endfor
+	"creating classifier grid labels done."
+endfunction
+
+
+
+function _classifiedGrid = classifyGrid(dataTrainingC, classifier)
+	global classifierGrid;
+
+	_classifiedGrid = [];
+
+	for xNy = classifierGrid'
+		x = xNy(1);
+		y = xNy(2);
+		tdi = length(_classifiedGrid) + 1;
+		_classifiedGrid(tdi, 1) = x;
+		_classifiedGrid(tdi, 2) = y;
+		isInit = (x == -1) && (y == -1);
+		_classifiedGrid(tdi, 3) = feval(classifier, dataTrainingC, [x, y], isInit);
 	endfor
 endfunction
 
@@ -274,11 +306,8 @@ function _cls = classifierSvm(dataTrainingC, point, isInit)
 	global svmTrainOptions;
 	if isInit
 		d = 2; # number of input data dimensions
-		trainingLabels = dataTrainingC';
-		trainingLabels(1:d,:) = []; # delete the first d rows
-		trainingLabels(1+1:end,:) = []; # delete everything except the first row
-		trainingInput = dataTrainingC';
-		trainingInput(d+1:end,:) = []; # delete everything except the first d rows
+		trainingLabels = dataTrainingC(:, [3])'; # take only the 3rd row
+		trainingInput = dataTrainingC(:, [1, 2])'; # take only the rows 1 and 2
 		model = svmtrain(trainingLabels', trainingInput', svmTrainOptions);
 	endif
 	res = svmpredict(123.456, point, model);
@@ -333,6 +362,9 @@ dataTrainingC = [
 
 global stepSize = 0.1;
 
+global classifierGrid = createClassifierGrid(dataTrainingC);
+global classifierGridLabels = createClassifierGridLabels(classifierGrid);
+
 
 
 
@@ -352,6 +384,47 @@ endfor
 
 
 # 11.2 C-SVM with standard parameters
-plotSvm(dataTrainingC, dataTrainingP, '');
+plotSvm(dataTrainingC, dataTrainingP, "-q");
 
+
+# 11.3 Parameter optimization
+params = [];
+accuracies = [];
+cExps = -7 : 2 : 15;
+gammaExps = -11 : 2 : 7;
+ci = 1;
+optimalAccuracy = 0;
+optimalParams = [0, 0];
+for myCExp = cExps;
+	gi = 1;
+	for myGammaExp = gammaExps;
+		myC = 2^myCExp;
+		myGamma = 2^myGammaExp;
+		global svmTrainOptions;
+		# HACK There seems ot be a bug in the strcat function,
+		#   which makes it trim all sub-strings.
+		#   Thus we have to use the following trick.
+		svmTrainOptions = strcat("-q -v 16 -s 0 -c_", num2str(myC), " -g_", num2str(myGamma));
+		svmTrainOptions = strrep(svmTrainOptions, "_", " ");
+		# begin: init model
+			trainingLabels = dataTrainingC(:, [3])'; # take only the 3rd row
+			trainingInput = dataTrainingC(:, [1, 2])'; # take only the rows 1 and 2
+			crossValidatedAccuracy = svmtrain(trainingLabels', trainingInput', svmTrainOptions);
+		# end: init model
+		params(end+1, [1, 2]) = [myC, myGamma];
+		accuracies(ci, gi) = [crossValidatedAccuracy];
+		if crossValidatedAccuracy > optimalAccuracy
+			optimalParams = [myC, myGamma];
+			optimalAccuracy = crossValidatedAccuracy;
+		endif
+		gi = gi + 1;
+	endfor
+	ci = ci + 1;
+endfor
+surf(gammaExps, cExps, accuracies);
+title('SVM parameter optimization (RBF kernel)');
+legend(["accuracy"]);
+xlabel("gamma");
+ylabel("C");
+print('out_parameterOptimization.png');
 
