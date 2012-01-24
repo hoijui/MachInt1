@@ -383,50 +383,59 @@ for myK = [4, 8]
 endfor
 
 
+exec112 = false;
+exec113 = false;
+exec114 = false;
+exec115 = true;
+
 # 11.2 C-SVM with standard parameters
-plotSvm(dataTrainingC, dataTrainingP, "-q");
+if exec112
+	plotSvm(dataTrainingC, dataTrainingP, "-q");
+endif
 
 
 # 11.3 Parameter optimization
-params = [];
-accuracies = [];
-cExps = -7 : 2 : 15;
-gammaExps = -11 : 2 : 7;
-ci = 1;
-optimalAccuracy = 0;
-optimalParams = [0, 0];
-for myCExp = cExps;
-	gi = 1;
-	for myGammaExp = gammaExps;
-		myC = 2^myCExp;
-		myGamma = 2^myGammaExp;
-		global svmTrainOptions;
-		# HACK There seems ot be a bug in the strcat function,
-		#   which makes it trim all sub-strings.
-		#   Thus we have to use the following trick.
-		svmTrainOptions = strcat("-q -v 16 -s 0 -c_", num2str(myC), " -g_", num2str(myGamma));
-		svmTrainOptions = strrep(svmTrainOptions, "_", " ");
-		# begin: init model
-			trainingLabels = dataTrainingC(:, [3])'; # take only the 3rd row
-			trainingInput = dataTrainingC(:, [1, 2])'; # take only the rows 1 and 2
-			crossValidatedAccuracy = svmtrain(trainingLabels', trainingInput', svmTrainOptions);
-		# end: init model
-		params(end+1, [1, 2]) = [myC, myGamma];
-		accuracies(ci, gi) = [crossValidatedAccuracy];
-		if crossValidatedAccuracy > optimalAccuracy
-			optimalParams = [myC, myGamma];
-			optimalAccuracy = crossValidatedAccuracy;
-		endif
-		gi = gi + 1;
+if exec113
+	params = [];
+	accuracies = [];
+	cExps = -7 : 2 : 15;
+	gammaExps = -11 : 2 : 7;
+	ci = 1;
+	optimalAccuracy = 0;
+	optimalParams = [0, 0];
+	for myCExp = cExps;
+		gi = 1;
+		for myGammaExp = gammaExps;
+			myC = 2^myCExp;
+			myGamma = 2^myGammaExp;
+			global svmTrainOptions;
+			# HACK There seems ot be a bug in the strcat function,
+			#   which makes it trim all sub-strings.
+			#   Thus we have to use the following trick.
+			svmTrainOptions = strcat("-q -v 16 -s 0 -c_", num2str(myC), " -g_", num2str(myGamma));
+			svmTrainOptions = strrep(svmTrainOptions, "_", " ");
+			# begin: init model
+				trainingLabels = dataTrainingC(:, [3])'; # take only the 3rd row
+				trainingInput = dataTrainingC(:, [1, 2])'; # take only the rows 1 and 2
+				crossValidatedAccuracy = svmtrain(trainingLabels', trainingInput', svmTrainOptions);
+			# end: init model
+			params(end+1, [1, 2]) = [myC, myGamma];
+			accuracies(ci, gi) = [crossValidatedAccuracy];
+			if crossValidatedAccuracy > optimalAccuracy
+				optimalParams = [myC, myGamma];
+				optimalAccuracy = crossValidatedAccuracy;
+			endif
+			gi = gi + 1;
+		endfor
+		ci = ci + 1;
 	endfor
-	ci = ci + 1;
-endfor
-surf(gammaExps, cExps, accuracies);
-title('SVM parameter optimization (RBF kernel)');
-legend(["accuracy"]);
-xlabel("gamma");
-ylabel("C");
-print('out_parameterOptimization.png');
+	surf(gammaExps, cExps, accuracies);
+	title('SVM parameter optimization (RBF kernel)');
+	legend(["accuracy"]);
+	xlabel("gamma");
+	ylabel("C");
+	print('out_parameterOptimization.png');
+endif
 
 
 
@@ -434,7 +443,68 @@ print('out_parameterOptimization.png');
 # HACK There seems ot be a bug in the strcat function,
 #   which makes it trim all sub-strings.
 #   Thus we have to use the following trick.
-svmTrainOptions = strcat("-q -s 0 -c_", num2str(optimalParams(1)), " -g_", num2str(optimalParams(2)));
-svmTrainOptions = strrep(svmTrainOptions, "_", " ");
-plotSvm(dataTrainingC, dataTrainingP, svmTrainOptions);
+if exec114
+	svmTrainOptions = strcat("-q -s 0 -c_", num2str(optimalParams(1)), " -g_", num2str(optimalParams(2)));
+	svmTrainOptions = strrep(svmTrainOptions, "_", " ");
+	plotSvm(dataTrainingC, dataTrainingP, svmTrainOptions);
+endif
+
+
+
+# 11.5 C-SVM with polynomial kernels
+if exec115
+
+	# 11.5 (2)
+	plotSvm(dataTrainingC, dataTrainingP, "-q -t 1 -g 1 -r 1");
+
+	# 11.5 (3)
+	params = [];
+	accuracies = [];
+	cExps = -11 : 2 : 15;
+	degreeExps = -5 : 2 : 7;
+	ci = 1;
+	optimalAccuracy = 0;
+	optimalParams = [0, 0];
+	for myCExp = cExps;
+		gi = 1;
+		for myDegreeExp = degreeExps;
+			myC = 2^myCExp;
+			myDegree = 2^myDegreeExp;
+			global svmTrainOptions;
+			# HACK There seems ot be a bug in the strcat function,
+			#   which makes it trim all sub-strings.
+			#   Thus we have to use the following trick.
+			svmTrainOptions = strcat("-q -t 1 -g 1 -r 1 -v 16 -s 0 -c_", num2str(myC), " -d_", num2str(myDegree));
+			svmTrainOptions = strrep(svmTrainOptions, "_", " ");
+			# begin: init model
+				trainingLabels = dataTrainingC(:, [3])'; # take only the 3rd row
+				trainingInput = dataTrainingC(:, [1, 2])'; # take only the rows 1 and 2
+				crossValidatedAccuracy = svmtrain(trainingLabels', trainingInput', svmTrainOptions);
+			# end: init model
+			params(end+1, [1, 2]) = [myC, myDegree];
+			accuracies(ci, gi) = [crossValidatedAccuracy];
+			if crossValidatedAccuracy > optimalAccuracy
+				optimalParams = [myC, myDegree];
+				optimalAccuracy = crossValidatedAccuracy;
+			endif
+			gi = gi + 1;
+		endfor
+		ci = ci + 1;
+	endfor
+	surf(degreeExps, cExps, accuracies);
+	title('SVM parameter optimization (Polynomial kernel)');
+	legend(["accuracy"]);
+	xlabel("degree");
+	ylabel("C");
+	print('out_parameterOptimizationPoly.png');
+
+	# 11.5 (4)
+	# HACK There seems ot be a bug in the strcat function,
+	#   which makes it trim all sub-strings.
+	#   Thus we have to use the following trick.
+	svmTrainOptions = strcat("-q -t 1 -g 1 -r 1 -s 0 -c_", num2str(optimalParams(1)), " -d_", num2str(optimalParams(2)));
+	svmTrainOptions = strrep(svmTrainOptions, "_", " ");
+	plotSvm(dataTrainingC, dataTrainingP, svmTrainOptions);
+endif
+
 
