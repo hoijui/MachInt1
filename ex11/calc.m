@@ -360,7 +360,7 @@ dataTrainingC = [
 	dataTrainingP(1,:)' dataTrainingP(2,:)' 1 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1);
 	dataTrainingP(3,:)' dataTrainingP(4,:)' 2 * ones(nSampPerClass, 1), zeros(nSampPerClass, 1)];
 
-global stepSize = 0.1;
+global stepSize = 0.03;
 
 global classifierGrid = createClassifierGrid(dataTrainingC);
 global classifierGridLabels = createClassifierGridLabels(classifierGrid);
@@ -383,9 +383,9 @@ for myK = [4, 8]
 endfor
 
 
-exec112 = false;
-exec113 = false;
-exec114 = false;
+exec112 = true;
+exec113 = true;
+exec114 = true;
 exec115 = true;
 
 # 11.2 C-SVM with standard parameters
