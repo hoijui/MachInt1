@@ -346,10 +346,10 @@ function plotRbf(dataTrainingC, dataTrainingP, myK, mySigma)
 	plotClassifier(dataTrainingC, dataTrainingP, 'classifierRbf', strcat("k_", num2str(rbfK), "_sigma_", num2str(rbfSigma)));
 endfunction
 
-function plotSvm(dataTrainingC, dataTrainingP, mySvmTrainOptions)
+function plotSvm(dataTrainingC, dataTrainingP, mySvmTrainOptions, name)
 	global svmTrainOptions;
 	svmTrainOptions = mySvmTrainOptions;
-	plotClassifier(dataTrainingC, dataTrainingP, 'classifierSvm', svmTrainOptions);
+	plotClassifier(dataTrainingC, dataTrainingP, 'classifierSvm', name);
 endfunction
 
 
@@ -390,7 +390,7 @@ exec115 = true;
 
 # 11.2 C-SVM with standard parameters
 if exec112
-	plotSvm(dataTrainingC, dataTrainingP, "-q");
+	plotSvm(dataTrainingC, dataTrainingP, "-q", "cSvmDefault");
 endif
 
 
@@ -434,7 +434,7 @@ if exec113
 	legend(["accuracy"]);
 	xlabel("gamma");
 	ylabel("C");
-	print('out_parameterOptimization.png');
+	print('out_cSvmRbfParameterOptimization.png');
 endif
 
 
@@ -446,7 +446,7 @@ endif
 if exec114
 	svmTrainOptions = strcat("-q -s 0 -c_", num2str(optimalParams(1)), " -g_", num2str(optimalParams(2)));
 	svmTrainOptions = strrep(svmTrainOptions, "_", " ");
-	plotSvm(dataTrainingC, dataTrainingP, svmTrainOptions);
+	plotSvm(dataTrainingC, dataTrainingP, svmTrainOptions, "cSvmRbfOptimalParams");
 endif
 
 
@@ -455,7 +455,7 @@ endif
 if exec115
 
 	# 11.5 (2)
-	plotSvm(dataTrainingC, dataTrainingP, "-q -t 1 -g 1 -r 1");
+	plotSvm(dataTrainingC, dataTrainingP, "-q -t 1 -g 1 -r 1", "cSvmPolyDefault");
 
 	# 11.5 (3)
 	params = [];
@@ -496,7 +496,7 @@ if exec115
 	legend(["accuracy"]);
 	xlabel("degree");
 	ylabel("C");
-	print('out_parameterOptimizationPoly.png');
+	print('out_cSvmPolyParameterOptimization.png');
 
 	# 11.5 (4)
 	# HACK There seems ot be a bug in the strcat function,
@@ -504,7 +504,7 @@ if exec115
 	#   Thus we have to use the following trick.
 	svmTrainOptions = strcat("-q -t 1 -g 1 -r 1 -s 0 -c_", num2str(optimalParams(1)), " -d_", num2str(optimalParams(2)));
 	svmTrainOptions = strrep(svmTrainOptions, "_", " ");
-	plotSvm(dataTrainingC, dataTrainingP, svmTrainOptions);
+	plotSvm(dataTrainingC, dataTrainingP, svmTrainOptions, "cSvmPolyOptimalParams");
 endif
 
 

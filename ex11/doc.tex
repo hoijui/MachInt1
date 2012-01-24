@@ -1,0 +1,97 @@
+\documentclass[a4paper,headings=small]{scrartcl}
+\KOMAoptions{DIV=12}
+
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{multirow}
+
+% instead of using indents to denote a new paragraph, we add space before it
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{10pt plus 1pt minus 1pt}
+
+\title{Machine Intelligence I - WS2011/2012\\Excercise 11}
+\author{Robin Vobruba, Rolf Schroeder} %, Marcus Grum, Robert Koppisch
+\date{\today}
+
+\pdfinfo{%
+  /Title    (Machine Intelligence I - WS2011/2012 - Excercise 11)
+  /Author   (Robin Vobruba, Rolf Schroeder)
+  /Creator  ()
+  /Producer ()
+  /Subject  ()
+  /Keywords ()
+}
+
+% Simple picture reference
+%   Usage: \image{#1}{#2}{#3}
+%     #1: file-name of the image
+%     #2: percentual width (decimal)
+%     #3: caption/description
+%
+%   Example:
+%     \image{myPicture}{0.8}{My huge house}
+%     See fig. \ref{fig:myPicture}.
+\newcommand{\image}[3]{
+	\begin{figure}[htbp]
+		\centering
+		\includegraphics[width=#2\textwidth]{#1}
+		\caption{#3}
+		\label{fig:#1}
+	\end{figure}
+}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\section{C-SVM optimization problem (11.1)}
+
+TODO (Theroy)
+
+
+\section{C-SVM with standard parameters (11.2)}
+
+... see fig. \ref{fig:out_classifierSvm_cSvmDefault} ...
+
+\image{out_classifierSvm_cSvmDefault}{0.9}%
+	{Shows the classification boundary of the default C-SVM settings of libSvm.}
+
+
+\section{Parameter optimization (11.3)}
+
+... see fig. \ref{fig:out_cSvmRbfParameterOptimization} ...
+
+\image{out_cSvmRbfParameterOptimization}{0.9}%
+	{Parameter optimization/model selection for a C-SVM with an RBF kernel.}
+
+
+\section{C-SVM with optimal parameters (11.4)}
+
+... see fig. \ref{fig:out_classifierSvm_cSvmRbfOptimalParams} ...
+
+\image{out_classifierSvm_cSvmRbfOptimalParams}{0.9}%
+	{Using the determined optimal RBF parameters C and gamma.}
+
+
+\section{C-SVM with polynomial kernels (11.5)}
+
+... see fig. \ref{fig:out_classifierSvm_cSvmPolyDefault} ...
+... see fig. \ref{fig:out_cSvmPolyParameterOptimization} ...
+... see fig. \ref{fig:out_classifierSvm_cSvmPolyOptimalParams} ...
+
+\image{out_classifierSvm_cSvmPolyDefault}{0.9}%
+	{Shows the classification boundary of the default C-SVM settings of libSvm for a polynomial kernel.}
+
+\image{out_cSvmPolyParameterOptimization}{0.9}%
+	{Parameter optimization/model selection for a C-SVM with a polynomial kernel.}
+
+\image{out_classifierSvm_cSvmPolyOptimalParams}{0.9}%
+	{Using the determined optimal polynomial parameters C and degree.}
+
+
+\end{document}
