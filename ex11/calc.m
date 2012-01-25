@@ -67,84 +67,6 @@ function _point = getPoint(data, index)
 endfunction
 
 
-
-# 9.1 k Nearest Neighbors
-
-function _knn = knn(dataTrainingC, point, k)
-	distances = [];
-	n = length(dataTrainingC);
-	for i = 1:n # iterate over all training points
-		x = getPoint(dataTrainingC, i); # training data point
-		t = dataTrainingC(i, 3); # label
-		# add distance and target of current point
-		distances = [distances; distance(point, x), t];
-	endfor
-	distances = sortrows(distances); # sort rows (by first column -> sort by distance ascending)
-	distances(k+1:end,:)=[]; # delete everything except the first k rows
-	s = sum(distances, 1); # sum along the cols
-	s(:,1) = []; # keep only the label sum
-	_knn = round(s / k);
-endfunction
-
-
-# 9.2 Parzen Windows
-
-function _pn = pn(dataTrainingC, point, parzenSigma)
-	classesWeighted = [0, 0];
-	n = length(dataTrainingC);
-	for i = 1:n # iterate over all training points
-		x = getPoint(dataTrainingC, i); # training data point
-		t = dataTrainingC(i, 3); # label
-		# add distance and target of current point
-		classesWeighted(t) += 1 / sqrt(2*pi*parzenSigma^2) * exp(-distance(point, x)^2 / (2*parzenSigma^2));
-	endfor
-	if classesWeighted(1) > classesWeighted(2)
-		_pn = 1;
-	else
-		_pn = 2;
-	endif
-endfunction
-
-
-
-# 9.3 RBF Network
-
-function _phi = phi(x, rbfMu, rbfSigma)
-	_phi = exp(-1 * distance(x, rbfMu)^2 / 2 * rbfSigma^2);
-endfunction
-
-# calculate the k centroids
-function _centroids = kmeans(dataTrainingC, k)
-	n = length(dataTrainingC);
-	# pick random data points as initial centroids
-	t = [];
-	for i = 1:k
-		index = unidrnd(n);
-		t = [t; getPoint(dataTrainingC, index)];
-	endfor
-	# update cenroids
-	for i = 1:(10 * n)
-		index = unidrnd(n);
-		# choose data point
-		x = getPoint(dataTrainingC, index);
-
-		# determine closest centroid
-		distances = [];
-		for j = 1:length(t)
-			distances = [distances; distance(x, t(j,:)), j];
-		endfor
-		distances = sortrows(distances);
-		jnearest = distances(1,2);
-		nearest = t(jnearest,:);
-
-		# update centroid
-		nearest = nearest + (1 / n) * (x - nearest);
-		t(jnearest,:) = nearest;
-	endfor
-	_centroids = t;
-endfunction
-
-
 function plotClsDist(dataTrainingP, testC1, testC2, name)
 	global mySamples;
 	global stepSize;
@@ -232,75 +154,6 @@ function _testClassData = separateTestDataIntoClasses(classifiedGrid, wantedClas
 	endfor
 endfunction
 
-function _cls = classifierKnn(dataTrainingC, point, isInit)
-	global k;
-	_cls = knn(dataTrainingC, point, k);
-endfunction
-
-function _cls = classifierParzen(dataTrainingC, point, isInit)
-	global parzenSigma;
-	_cls = pn(dataTrainingC, point, parzenSigma);
-endfunction
-
-function _cls = classifierRbf(dataTrainingC, point, isInit)
-	global rbfK;
-	global rbfSigma;
-	global rbfMus;
-	global rbfX;
-	global rbfW;
-	global rbfWC1;
-	global rbfWC2;
-	if isInit
-		rbfMus = kmeans(dataTrainingC, rbfK);
-		rbfX = dataTrainingC;
-		rbfX(:,3:end)=[]; # delete the labels
-		phiMatrix = [];
-		for j = 1:rbfK
-			phiCol = [];
-			for alpha = 1:length(rbfX)
-					phiCol = [phiCol; phi(rbfX(alpha), rbfMus(j), rbfSigma)];
-			endfor
-			phiMatrix = [phiMatrix phiCol];
-		endfor
-		% once we are here, phiMatrix is 80x4
-
-		phiMatrix = [phiMatrix ones(length(rbfX), 1)]; % add bias, phiMatrix is now 80x5
-		% get labels
-		rbfT = dataTrainingC;
-		rbfT(:,4)=[]; # delete the filler
-		rbfT(:,1:2)=[]; # delete the data
-		% comute weight vector
-		%rbfW = pinv(phiMatrix) * rbfT;
-		half = length(rbfX) / 2; % this is hard coded, won't work for more than 2 classes
-		rbfTC1 = [ones(half, 1); zeros(half, 1)]; % hard coded: we suppose, that the first half data points are class1, the second half class two
-		rbfTC2 = [zeros(half, 1); ones(half, 1)];
-		rbfWC1 = pinv(phiMatrix) * rbfTC1;
-		rbfWC2 = pinv(phiMatrix) * rbfTC2;
-	endif
-
-	% compute output
-	%_y = 0;
-	_yC1 = 0;
-	_yC2 = 0;
-	for j = 1:(rbfK)
-		phiJ = phi(point, rbfMus(j), rbfSigma);
-		%_y += rbfW(j) * phiJ;
-		_yC1 += rbfWC1(j) * phiJ;
-		_yC2 += rbfWC2(j) * phiJ;
-	endfor
-	% add bias
-	%_y += _y + rbfW(rbfK+1) * 1.0;
-	_yC1 += _yC1 + rbfWC1(rbfK+1) * 1.0;
-	_yC2 += _yC2 + rbfWC2(rbfK+1) * 1.0;
-
-	%if _y < 1.5
-	if _yC1 < _yC2
-		_cls = 1;
-	else
-		_cls = 2;
-	endif
-endfunction
-
 function _cls = classifierSvm(dataTrainingC, point, isInit)
 	global model;
 	global svmTrainOptions;
@@ -328,25 +181,7 @@ function _cls = plotClassifier(dataTrainingC, dataTrainingP, classifier, nameSuf
 endfunction
 
 
-function plotKnn(dataTrainingC, dataTrainingP, myK)
-	global k;
-	k = myK;
-	plotClassifier(dataTrainingC, dataTrainingP, 'classifierKnn', strcat("k_", num2str(k)));
-endfunction
 
-function plotParzen(dataTrainingC, dataTrainingP, mySigma2)
-	global parzenSigma;
-	parzenSigma = sqrt(mySigma2);
-	plotClassifier(dataTrainingC, dataTrainingP, 'classifierParzen', strcat("sigma2_", num2str(mySigma2)));
-endfunction
-
-function plotRbf(dataTrainingC, dataTrainingP, myK, mySigma)
-	global rbfK;
-	global rbfSigma;
-	rbfK = myK;
-	rbfSigma = mySigma;
-	plotClassifier(dataTrainingC, dataTrainingP, 'classifierRbf', strcat("k_", num2str(rbfK), "_sigma_", num2str(rbfSigma)));
-endfunction
 
 function plotSvm(dataTrainingC, dataTrainingP, mySvmTrainOptions, name)
 	global svmTrainOptions;
