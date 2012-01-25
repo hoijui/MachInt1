@@ -433,6 +433,9 @@ if exec113
 				optimalParams = [myC, myGamma];
 				optimalAccuracy = crossValidatedAccuracy;
 			endif
+			save -append 'log' myC
+			save -append 'log' myGamma
+			save -append 'log' crossValidatedAccuracy
 			gi = gi + 1;
 		endfor
 		ci = ci + 1;
@@ -502,6 +505,9 @@ if exec115
 				optimalAccuracy = crossValidatedAccuracy;
 			endif
 			gi = gi + 1;
+			save -append 'log' myC
+			save -append 'log' myDegree
+			save -append 'log' crossValidatedAccuracy
 		endfor
 		ci = ci + 1;
 	endfor
