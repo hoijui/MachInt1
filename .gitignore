@@ -1,7 +1,11 @@
 *.pdf
 /README.html
-/ex05/*.png
+*.png
+*.mex
 
 # Latex temp files
 *.t2d
 *.tex.backup
+*.aux
+*.log
+*.t2d
