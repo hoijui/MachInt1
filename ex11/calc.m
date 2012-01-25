@@ -309,6 +309,8 @@ function _cls = classifierSvm(dataTrainingC, point, isInit)
 		trainingLabels = dataTrainingC(:, [3])'; # take only the 3rd row
 		trainingInput = dataTrainingC(:, [1, 2])'; # take only the rows 1 and 2
 		model = svmtrain(trainingLabels', trainingInput', svmTrainOptions);
+		totalSV = model.totalSV
+		save -append 'log' totalSV
 	endif
 	res = svmpredict(123.456, point, model);
 	_cls = res(1);
@@ -349,6 +351,7 @@ endfunction
 function plotSvm(dataTrainingC, dataTrainingP, mySvmTrainOptions, name)
 	global svmTrainOptions;
 	svmTrainOptions = mySvmTrainOptions;
+	save -append 'log' name
 	plotClassifier(dataTrainingC, dataTrainingP, 'classifierSvm', name);
 endfunction
 
@@ -387,15 +390,20 @@ exec112 = true;
 exec113 = true;
 exec114 = true;
 exec115 = true;
+unlink('log')
 
 # 11.2 C-SVM with standard parameters
 if exec112
+	ex = "\n#########################\n# EX 11.2\n#########################\n"
+	save -append 'log' ex
 	plotSvm(dataTrainingC, dataTrainingP, "-q", "cSvmDefault");
 endif
 
 
 # 11.3 Parameter optimization
 if exec113
+	ex = "\n#########################\n# EX 11.3\n#########################\n"
+	save -append 'log' ex
 	params = [];
 	accuracies = [];
 	cExps = -7 : 2 : 15;
@@ -435,6 +443,8 @@ if exec113
 	xlabel("gamma");
 	ylabel("C");
 	print('out_cSvmRbfParameterOptimization.png');
+	save -append 'log' optimalParams
+	save -append 'log' optimalAccuracy
 endif
 
 
@@ -444,6 +454,8 @@ endif
 #   which makes it trim all sub-strings.
 #   Thus we have to use the following trick.
 if exec114
+	ex = "\n#########################\n# EX 11.4\n#########################\n"
+	save -append 'log' ex
 	svmTrainOptions = strcat("-q -s 0 -c_", num2str(optimalParams(1)), " -g_", num2str(optimalParams(2)));
 	svmTrainOptions = strrep(svmTrainOptions, "_", " ");
 	plotSvm(dataTrainingC, dataTrainingP, svmTrainOptions, "cSvmRbfOptimalParams");
@@ -453,6 +465,8 @@ endif
 
 # 11.5 C-SVM with polynomial kernels
 if exec115
+	ex = "\n#########################\n# EX 11.5\n#########################\n"
+	save -append 'log' ex
 
 	# 11.5 (2)
 	plotSvm(dataTrainingC, dataTrainingP, "-q -t 1 -g 1 -r 1", "cSvmPolyDefault");
@@ -497,6 +511,8 @@ if exec115
 	xlabel("degree");
 	ylabel("C");
 	print('out_cSvmPolyParameterOptimization.png');
+	save -append 'log' optimalParams
+	save -append 'log' optimalAccuracy
 
 	# 11.5 (4)
 	# HACK There seems ot be a bug in the strcat function,
