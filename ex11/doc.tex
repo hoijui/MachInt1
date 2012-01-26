@@ -48,22 +48,22 @@
 
 \maketitle
 
-This paper reports our findings for exercise 11 of the Machine Intelligence I tutorial. Our codebase heavily uses the libsvm package. Thus, the programm is mostly a recrafted version of exercise 9's code but with the use of libsvm for training/predicting instead of own implementations. As asked, data points and labes are drawn exactly like before.
+This paper reports our findings for exercise 11 of the Machine Intelligence I tutorial. Our codebase heavily uses the libSvm package. Thus, the program is mostly a recrafted version of exercise 9's code but with the use of libSvm for training/predicting instead of handmade implementations. As asked, data points and labels are drawn exactly like before.
 
 \section{C-SVM with standard parameters (11.2)}
 
-Fig. \ref{fig:out_classifierSvm_cSvmDefault} shows the result we obtained from training a C-SVM with the libsvm package. The default configuration (cost parameter C = 1, $\gamma$ in kernel function = $1/num\_features$ [e.g. 0.5]) already gives some pretty good results. libSVM determined 48 support vectors. The figures indicates, that the result is pretty good. There is some sort of misclassification in the center (0.5, 0.5) where the classifier only suspects class 2 (blue).
+Fig. \ref{fig:out_classifierSvm_cSvmDefault} shows the result we obtained from training a C-SVM with the libSvm package. The default configuration (cost parameter $C = 1$, $\gamma$ in kernel function = $1/num\_features$ [e.g. 0.5]) already gives some pretty good results. libSvm determined 48 support vectors. The figures indicates, that the result is pretty good. There is some sort of misclassification in the center (0.5, 0.5) where the classifier creates a sort of corridor occupied by one of the classes.
 
 \image{out_classifierSvm_cSvmDefault}{0.9}%
-	{Shows the classification boundary of the default C-SVM settings of libSvm (C = 1, $\gamma$ = $1/num\_features$).}
+	{Shows the classification boundary of the default C-SVM settings of libSvm ($C = 1$, $\gamma = 1/num\_features$).}
 
 
 \section{Parameter optimization (11.3)}
 
-We than used libsvm's cross validation feature in order to find optimal values for C and $\gamma$. The data points have been devided into 16 subsets. This number prooved to have sufficient good results without slowing down the search too much. After several test runs, we concluded, that we can reach an accuracy of around 80 to 95\% by using the optimal parameters, which is a very high rate. The results are trustful because cross validation is used in order to minimize the generalization error. However, we also applied cross validation on the default classifier which ranked 85\% (e.g. the default model can merely be optimized). Fig. \ref{fig:out_cSvmRbfParameterOptimization} shows the performance evolution during the parameter changes. There seems to be a somewhat "proportional relationship" between C and $\gamma$: We observe accuracy valleys (e.g. low accuracy) when using small C and $\gamma$ values AND when using high C and $\gamma$ values. On the other hand, a couple of C/$\gamma$ pairings in the middle of their respective intervals promise good results. We therefore conclude that the parameters influence each other mutually and that it does not make sense to adjust only one of them. The optimal parameters for the run shown in figure \ref{fig:out_cSvmRbfParameterOptimization} are C = 8 and $\gamma$ = 0.5 which leads to an predicted accuracy of 95\%. Interestingly, the best $\gamma$ value here is the same is the defaul value, which partly explains why the optimized classifier does not outperfom enormously the initial one.
+We then used libSvm's cross validation feature in order to find optimal values for C and $\gamma$. The data points have been divided into 16 subsets. This number proved to have sufficient good results without slowing down the search too much. After several test runs, we concluded, that we can reach an accuracy of around 80 to 95\% by using the optimal parameters, which is a very high rate. The results are trustful because cross validation is used in order to minimize the generalization error. However, we also applied cross validation on the default classifier which ranked 85\% (e.g. the default model can merely be optimized). Fig. \ref{fig:out_cSvmRbfParameterOptimization} shows the performance evolution during the parameter changes. There seems to be a somewhat "proportional relationship" between C and $\gamma$: We observe accuracy valleys (e.g. low accuracy) when using small C and $\gamma$ values AND when using high C and $\gamma$ values. On the other hand, a couple of C/$\gamma$ pairings in the middle of their respective intervals promise good results. We therefore conclude that the parameters influence each other mutually and that it does not make sense to adjust only one of them. The optimal parameters for the run shown in figure \ref{fig:out_cSvmRbfParameterOptimization} are C = 8 and $\gamma$ = 0.5 which leads to an predicted accuracy of 95\%. Interestingly, the best $\gamma$ value here is the same as the default value, which partly explains why the optimized classifier does not outperform the initial one enormously.
 
 \image{out_cSvmRbfParameterOptimization}{0.9}%
-	{Parameter optimization/model selection for a C-SVM with an RBF kernel (optimal choice: C = 8, $\gamma$ = 0.5, predicted accuracy: 95\%).}
+	{Parameter optimization/model selection for a C-SVM with an RBF kernel (optimal choice: $C = 8$, $\gamma = 0.5$, predicted accuracy: 95\%).}
 
 
 \section{C-SVM with optimal parameters (11.4)}
@@ -71,12 +71,12 @@ We than used libsvm's cross validation feature in order to find optimal values f
 When using the optimal parameters, we usually determine 1/3 less support vectors compared to the default procedure (the given example in fig. \ref{fig:out_classifierSvm_cSvmRbfOptimalParams} uses 29). Nevertheless, occasionally the optimal model even used more support vectors (nearly all training points). This might be caused by an unfortunate distribution of the data points. Surprisingly, the classifier in fig. \ref{fig:out_classifierSvm_cSvmRbfOptimalParams} does not seem to perform better than the default model.
 
 \image{out_classifierSvm_cSvmRbfOptimalParams}{0.9}%
-	{Using the determined optimal RBF parameters C and gamma (C = 8, $\gamma$ = 0.5).}
+	{Using the determined optimal RBF parameters C and gamma ($C = 8$, $\gamma = 0.5$).}
 
 
 \section{C-SVM with polynomial kernels (11.5)}
 
-Fig. \ref{fig:out_classifierSvm_cSvmPolyDefault} shows a C-SVM with a polynomial kernel. Most parameters are chosen as demanded in the exercise. We used cross validation again to obtain optimal values for C and degree. This grid search is shown in fig. \ref{fig:out_cSvmPolyParameterOptimization}. We observe a strong influence on the performance when using negative degrees (this leads to bad accuracy). Indeed, degree has a high impact within the given kernel function (it "powers" the calculation). As a rule of thumb in this scenario, higher Cs seem to be good choice. C = 8 and degree = 2 turn out to be an optimal pairing for the given data points. The default C-SVM with polynominal kernel uses 30 support vectors whereas the optimized model uses 25. Fig. \ref{fig:out_classifierSvm_cSvmPolyOptimalParams} illustrates the best classifier, which is quite similar to the default model.
+Fig. \ref{fig:out_classifierSvm_cSvmPolyDefault} shows a C-SVM with a polynomial kernel. Most parameters are chosen as demanded in the exercise. We used cross validation again to obtain optimal values for $C$ and $degree$. This grid search is shown in fig. \ref{fig:out_cSvmPolyParameterOptimization}. We observe a strong influence on the performance when using negative degrees (this leads to bad accuracy). Indeed, degree has a high impact within the given kernel function (it "powers" the calculation). As a rule of thumb in this scenario, higher Cs seem to be good choice. $C = 8$ and $degree = 2$ turn out to be an optimal pairing for the given data points. The default C-SVM with polynomial kernel uses 30 support vectors whereas the optimized model uses 25. Fig. \ref{fig:out_classifierSvm_cSvmPolyOptimalParams} illustrates the best classifier, which is quite similar to the default model.
 
 \image{out_classifierSvm_cSvmPolyDefault}{0.9}%
 	{Shows the classification boundary of the default C-SVM settings of libSvm for a polynomial kernel.}
